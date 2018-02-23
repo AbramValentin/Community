@@ -11,6 +11,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
 using Community.Services;
+using Community.Data.Tables;
 
 namespace Community
 {
@@ -33,9 +34,20 @@ namespace Community
                 }
             );
 
-            services.AddIdentity<User, IdentityRole>()
-                .AddEntityFrameworkStores<CommunityDbContext>()
-                .AddDefaultTokenProviders();
+            services.AddIdentity<User, IdentityRole>(options =>
+                {
+                    options.Password.RequireDigit = false;
+                    options.Password.RequiredLength = 0;
+                    options.Password.RequireUppercase = false;
+                    options.Password.RequireNonAlphanumeric = false;
+
+                    options.User.AllowedUserNameCharacters += " "; //"abcdefghijklmnopqrstuvwxyz ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+                }
+            )
+            .AddEntityFrameworkStores<CommunityDbContext>()
+            .AddDefaultTokenProviders();
+
+   
 
             services.AddTransient<IEmailSender, EmailSender>();
 
@@ -49,6 +61,10 @@ namespace Community
             {
                 app.UseDeveloperExceptionPage();
             }
+
+            app.UseAuthentication();
+
+            app.UseStaticFiles();
 
             app.UseMvc(routes =>
             {

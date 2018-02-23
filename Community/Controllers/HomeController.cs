@@ -10,7 +10,7 @@ namespace Community
     {
         public IActionResult Index()
         {
-            return Content("main page");
+            return View();
         }
     }
 }

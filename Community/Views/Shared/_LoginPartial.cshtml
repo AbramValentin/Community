@@ -1,0 +1,13 @@
+﻿@inject SignInManager<User> SignInManager
+@inject UserManager<User> UserManager
+
+<li>
+    @if (SignInManager.IsSignedIn(User))
+    {
+        <a asp-controller="Account" asp-action="LogOut">Logout</a>
+    }
+    else
+    {
+        <a asp-controller="Account" asp-action="LogIn">Login</a>
+    }
+</li>
