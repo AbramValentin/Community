@@ -13,7 +13,7 @@ namespace Community.Data
         public DbSet<MeetingCategory> MeetingCategories { get; set; }
         
 
-        public CommunityDbContext(DbContextOptions options) 
+        public CommunityDbContext(DbContextOptions<CommunityDbContext> options) 
             : base(options)
         {
             

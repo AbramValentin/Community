@@ -34,6 +34,11 @@ namespace Community
                 }
             );
 
+            services.AddDbContext<LocationsDbContext>(options => {
+                options.UseSqlServer(_configuration.GetConnectionString("LocationDb"));
+            }
+           );
+
             services.AddIdentity<User, IdentityRole>(options =>
                 {
                     options.Password.RequireDigit = false;
