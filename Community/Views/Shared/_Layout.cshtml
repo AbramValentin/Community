@@ -36,7 +36,7 @@
                         </a>
                         <ul class="dropdown-menu">
                             <li><a href="#">My events</a></li>
-                            <li><a href="#">Create event</a></li>
+                            <li><a asp-action="Create" asp-controller="Meeting">Create event</a></li>
                             <li role="separator" class="divider"></li>
                             @await Html.PartialAsync("_LoginPartial")
                         </ul>

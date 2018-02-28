@@ -7,7 +7,7 @@ namespace Community.Data.Tables
         public string UserId { get; set; }
         public User User { get; set; }
 
-        public string MeetingId { get; set; }
+        public int MeetingId { get; set; }
         public Meeting Meeting { get; set; }
     }
 }

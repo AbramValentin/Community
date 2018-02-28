@@ -29,15 +29,14 @@ namespace Community
 
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddTransient<IEmailSender, EmailSender>();
+            services.AddTransient<MeetingManager>();
+
             services.AddDbContext<CommunityDbContext>(options => {
                 options.UseSqlServer(_configuration.GetConnectionString("SqlServerString"));
                 }
             );
 
-            services.AddDbContext<LocationsDbContext>(options => {
-                options.UseSqlServer(_configuration.GetConnectionString("LocationDb"));
-            }
-           );
 
             services.AddIdentity<User, IdentityRole>(options =>
                 {
@@ -46,16 +45,13 @@ namespace Community
                     options.Password.RequireUppercase = false;
                     options.Password.RequireNonAlphanumeric = false;
 
-                    options.User.AllowedUserNameCharacters += " "; //"abcdefghijklmnopqrstuvwxyz ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+                    options.User.AllowedUserNameCharacters += " ";
                 }
             )
             .AddEntityFrameworkStores<CommunityDbContext>()
             .AddDefaultTokenProviders();
 
    
-
-            services.AddTransient<IEmailSender, EmailSender>();
-
             services.AddMvc();
         }
 

@@ -11,7 +11,7 @@ using System;
 namespace Community.Migrations
 {
     [DbContext(typeof(CommunityDbContext))]
-    [Migration("20180220133034_InitialCreation")]
+    [Migration("20180228162559_InitialCreation")]
     partial class InitialCreation
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -21,12 +21,106 @@ namespace Community.Migrations
                 .HasAnnotation("ProductVersion", "2.0.0-rtm-26452")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-            modelBuilder.Entity("Community.Data.User", b =>
+            modelBuilder.Entity("Community.Data.Areas", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<string>("Area");
+
+                    b.Property<int>("RegionId");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Areas");
+                });
+
+            modelBuilder.Entity("Community.Data.Regions", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<string>("Region");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Regions");
+                });
+
+            modelBuilder.Entity("Community.Data.Settlements", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<int>("AreaId");
+
+                    b.Property<string>("City");
+
+                    b.Property<int?>("MeetingId");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("MeetingId");
+
+                    b.ToTable("Settlements");
+                });
+
+            modelBuilder.Entity("Community.Data.Tables.Meeting", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<string>("CreatorId");
+
+                    b.Property<string>("Description")
+                        .HasMaxLength(2000);
+
+                    b.Property<int?>("MeetingCategoryId");
+
+                    b.Property<DateTime>("MeetingDate");
+
+                    b.Property<string>("Name")
+                        .HasMaxLength(25);
+
+                    b.Property<string>("PhotoPath");
+
+                    b.Property<string>("Street")
+                        .HasMaxLength(30);
+
+                    b.Property<int?>("UsersMax");
+
+                    b.Property<int?>("UsersMin");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CreatorId");
+
+                    b.HasIndex("MeetingCategoryId");
+
+                    b.ToTable("Meetings");
+                });
+
+            modelBuilder.Entity("Community.Data.Tables.MeetingCategory", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<string>("Name")
+                        .HasMaxLength(25);
+
+                    b.HasKey("Id");
+
+                    b.ToTable("MeetingCategories");
+                });
+
+            modelBuilder.Entity("Community.Data.Tables.User", b =>
                 {
                     b.Property<string>("Id")
                         .ValueGeneratedOnAdd();
 
                     b.Property<int>("AccessFailedCount");
+
+                    b.Property<DateTime>("BirthDay");
 
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken();
@@ -52,6 +146,10 @@ namespace Community.Migrations
 
                     b.Property<bool>("PhoneNumberConfirmed");
 
+                    b.Property<string>("PhotoPath");
+
+                    b.Property<DateTime>("RegistrationDate");
+
                     b.Property<string>("SecurityStamp");
 
                     b.Property<bool>("TwoFactorEnabled");
@@ -70,6 +168,19 @@ namespace Community.Migrations
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
                     b.ToTable("AspNetUsers");
+                });
+
+            modelBuilder.Entity("Community.Data.Tables.UserMeetings", b =>
+                {
+                    b.Property<string>("UserId");
+
+                    b.Property<int>("MeetingId");
+
+                    b.HasKey("UserId", "MeetingId");
+
+                    b.HasIndex("MeetingId");
+
+                    b.ToTable("UserMeetings");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -180,6 +291,37 @@ namespace Community.Migrations
                     b.ToTable("AspNetUserTokens");
                 });
 
+            modelBuilder.Entity("Community.Data.Settlements", b =>
+                {
+                    b.HasOne("Community.Data.Tables.Meeting")
+                        .WithMany("City")
+                        .HasForeignKey("MeetingId");
+                });
+
+            modelBuilder.Entity("Community.Data.Tables.Meeting", b =>
+                {
+                    b.HasOne("Community.Data.Tables.User", "Creator")
+                        .WithMany("Meeting")
+                        .HasForeignKey("CreatorId");
+
+                    b.HasOne("Community.Data.Tables.MeetingCategory", "MeetingCategory")
+                        .WithMany("Meetings")
+                        .HasForeignKey("MeetingCategoryId");
+                });
+
+            modelBuilder.Entity("Community.Data.Tables.UserMeetings", b =>
+                {
+                    b.HasOne("Community.Data.Tables.Meeting", "Meeting")
+                        .WithMany("UserMeetings")
+                        .HasForeignKey("MeetingId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("Community.Data.Tables.User", "User")
+                        .WithMany("UserMeetings")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole")
@@ -190,7 +332,7 @@ namespace Community.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
                 {
-                    b.HasOne("Community.Data.User")
+                    b.HasOne("Community.Data.Tables.User")
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade);
@@ -198,7 +340,7 @@ namespace Community.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
-                    b.HasOne("Community.Data.User")
+                    b.HasOne("Community.Data.Tables.User")
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade);
@@ -211,7 +353,7 @@ namespace Community.Migrations
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade);
 
-                    b.HasOne("Community.Data.User")
+                    b.HasOne("Community.Data.Tables.User")
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade);
@@ -219,7 +361,7 @@ namespace Community.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
                 {
-                    b.HasOne("Community.Data.User")
+                    b.HasOne("Community.Data.Tables.User")
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade);

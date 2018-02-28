@@ -9,7 +9,7 @@ namespace Community.Data.Tables
 {
     public class Meeting
     {
-        public string Id { get; set; }
+        public int Id { get; set; }
 
         [StringLength(maximumLength: 25, MinimumLength = 5)]
         public string Name { get; set; }
@@ -26,7 +26,7 @@ namespace Community.Data.Tables
 
         public string PhotoPath { get; set; }
 
-        public int? CityId { get; set; }
+        public Settlements City { get; set; }
 
         [StringLength(maximumLength: 30, MinimumLength = 3)]
         public string Street { get; set; }
@@ -36,5 +36,7 @@ namespace Community.Data.Tables
         public MeetingCategory MeetingCategory { get; set; }
 
         public ICollection<UserMeetings> UserMeetings { get; set; }
+
+
     }
 }

@@ -4,27 +4,28 @@ using System.Collections.Generic;
 
 namespace Community.Migrations
 {
-    public partial class AddRelshipBetweenMeetingCategoriesAndMeetings : Migration
+    public partial class AddFKeyMeetingToSettlements : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
 
-            migrationBuilder.AddColumn<string>(
-                name: "MeetingCategoryId",
+
+            migrationBuilder.AddColumn<int>(
+                name: "CityId",
                 table: "Meetings",
-                type: "nvarchar(450)",
+                type: "int",
                 nullable: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_Meetings_MeetingCategoryId",
+                name: "IX_Meetings_CityId",
                 table: "Meetings",
-                column: "MeetingCategoryId");
+                column: "CityId");
 
             migrationBuilder.AddForeignKey(
-                name: "FK_Meetings_MeetingCategories_MeetingCategoryId",
+                name: "FK_Meetings_Settlements_CityId",
                 table: "Meetings",
-                column: "MeetingCategoryId",
-                principalTable: "MeetingCategories",
+                column: "CityId",
+                principalTable: "Settlements",
                 principalColumn: "Id",
                 onDelete: ReferentialAction.Restrict);
         }
@@ -32,21 +33,30 @@ namespace Community.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropForeignKey(
-                name: "FK_Meetings_MeetingCategories_MeetingCategoryId",
+                name: "FK_Meetings_Settlements_CityId",
                 table: "Meetings");
 
             migrationBuilder.DropIndex(
-                name: "IX_Meetings_MeetingCategoryId",
+                name: "IX_Meetings_CityId",
                 table: "Meetings");
 
             migrationBuilder.DropColumn(
-                name: "MeetingCategoryId",
+                name: "CityId",
                 table: "Meetings");
 
+            migrationBuilder.AddColumn<int>(
+                name: "MeetingId",
+                table: "Settlements",
+                nullable: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Settlements_MeetingId",
+                table: "Settlements",
+                column: "MeetingId");
 
             migrationBuilder.AddForeignKey(
-                name: "FK_MeetingCategories_Meetings_MeetingId",
-                table: "MeetingCategories",
+                name: "FK_Settlements_Meetings_MeetingId",
+                table: "Settlements",
                 column: "MeetingId",
                 principalTable: "Meetings",
                 principalColumn: "Id",

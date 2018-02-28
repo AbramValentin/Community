@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Community.Data;
 
@@ -9,9 +7,9 @@ namespace Community.Controllers
 {
     public class LocationController : Controller
     {
-        private LocationsDbContext _dbContext;
+        private readonly CommunityDbContext _dbContext;
 
-        public LocationController(LocationsDbContext dbContext)
+        public LocationController(CommunityDbContext dbContext)
         {
             _dbContext = dbContext;
         }
@@ -27,7 +25,7 @@ namespace Community.Controllers
         public IEnumerable<Areas> GetAreas(int id)
         {
             var list = _dbContext.Areas
-                .Where(m => m.region_id == id)
+                .Where(m => m.RegionId == id)
                 .ToList();
 
             return list;
@@ -37,7 +35,7 @@ namespace Community.Controllers
         public IEnumerable<Settlements> GetSettlements(int id)
         {
             var list = _dbContext.Settlements
-                .Where(m => m.area_id == id)
+                .Where(m => m.AreaId == id)
                 .ToList();
 
             return list;
