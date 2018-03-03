@@ -1,8 +1,8 @@
 ﻿namespace Community.Data
 {
-    public class Regions
+    public class Region
     {
         public int Id { get; set; }
-        public string Region { get; set; }
+        public string Name { get; set; }
     }
 }

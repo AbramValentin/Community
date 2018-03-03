@@ -12,6 +12,8 @@ namespace Community.ModelViews.MeetingViewModels
     {
         public int Id { get; set; }
 
+        public string UserId { get; set; }
+
         [StringLength(maximumLength: 25, MinimumLength = 5)]
         public string Name { get; set; }
 
@@ -21,6 +23,11 @@ namespace Community.ModelViews.MeetingViewModels
         [StringLength(maximumLength: 2000, MinimumLength = 20)]
         public string Description { get; set; }
 
+        public string CityName { get; set; }
+
+        [StringLength(maximumLength: 30, MinimumLength = 3)]
+        public string Street { get; set; }
+
         public string StartTime { get; set; }
 
         public string EndTime { get; set; }
@@ -28,19 +35,18 @@ namespace Community.ModelViews.MeetingViewModels
         [DataType(DataType.ImageUrl)]
         public string PhotoPath { get; set; }
 
-        public int? RegionId { get; set; }
+        public int MeetingCategoryId { get; set; }
+        public IEnumerable<MeetingCategory> MeetingCategories { get; set; }
+
+        public int RegionId { get; set; }
         public IEnumerable<Location> RegionList { get; set; }
 
-        public int? AreaId { get; set; }
+        public int AreaId { get; set; }
         public IEnumerable<Location> AreaList { get; set; }
 
-        public int? CityId { get; set; }
+        public int CityId { get; set; }
         public IEnumerable<Location> CityList { get; set; }
 
-        [StringLength(maximumLength: 30, MinimumLength = 3)]
-        public string Street { get; set; }
 
-        public int CategoryId { get; set; }
-        public IEnumerable<MeetingCategory> MeetingCategories { get; set; }
     }
 }

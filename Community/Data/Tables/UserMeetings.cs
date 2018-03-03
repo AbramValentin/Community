@@ -9,5 +9,7 @@ namespace Community.Data.Tables
 
         public int MeetingId { get; set; }
         public Meeting Meeting { get; set; }
+
+        public bool Approved { get; set; }
     }
 }

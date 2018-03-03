@@ -20,23 +20,21 @@ namespace Community.Data.Tables
         [StringLength(maximumLength: 2000, MinimumLength = 20)]
         public string Description { get; set; }
 
-        public int? UsersMin { get; set; }
+        public string StartTime { get; set; }
 
-        public int? UsersMax { get; set; }
+        public string EndTime { get; set; }
 
         public string PhotoPath { get; set; }
 
-        public Settlements City { get; set; }
+        public int CitiesId { get; set; }
 
         [StringLength(maximumLength: 30, MinimumLength = 3)]
         public string Street { get; set; }
 
-        public User Creator { get; set; }
+        public string UserId { get; set; }
 
-        public MeetingCategory MeetingCategory { get; set; }
+        public int MeetingCategoryId { get; set; }
 
         public ICollection<UserMeetings> UserMeetings { get; set; }
-
-
     }
 }

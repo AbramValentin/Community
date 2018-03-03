@@ -13,9 +13,9 @@ namespace Community.Data
         public DbSet<MeetingCategory> MeetingCategories { get; set; }
 
         //UA_CitiesDb (Already created)
-        public virtual DbSet<Areas> Areas { get; set; }
-        public virtual DbSet<Regions> Regions { get; set; }
-        public virtual DbSet<Settlements> Settlements { get; set; }
+        public virtual DbSet<Area> Areas { get; set; }
+        public virtual DbSet<Region> Regions { get; set; }
+        public virtual DbSet<City> Cities { get; set; }
 
 
         public CommunityDbContext(DbContextOptions<CommunityDbContext> options) 
@@ -23,7 +23,7 @@ namespace Community.Data
         {
             
         }
-
+   
         protected override void OnModelCreating(ModelBuilder builder)
         {
             builder.Entity<UserMeetings>()

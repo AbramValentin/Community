@@ -7,38 +7,29 @@ namespace Community.Controllers
 {
     public class LocationController : Controller
     {
-        private readonly CommunityDbContext _dbContext;
+        private readonly LocationQuery _locationQuery;
 
-        public LocationController(CommunityDbContext dbContext)
+        public LocationController(LocationQuery locationQuery)
         {
-            _dbContext = dbContext;
+            _locationQuery = locationQuery;
         }
 
-        [HttpGet]
-        public IEnumerable<Regions> GetRegions()
-        {
-            var list = _dbContext.Regions.ToList();
-            return list;
-        }
+        //[HttpGet]
+        //public IEnumerable<Region> GetRegions()
+        //{
+            
+        //}
 
-        [HttpGet]
-        public IEnumerable<Areas> GetAreas(int id)
-        {
-            var list = _dbContext.Areas
-                .Where(m => m.RegionId == id)
-                .ToList();
+        //[HttpGet]
+        //public IEnumerable<Area> GetAreasByRegionId(int regionId)
+        //{
+            
+        //}
 
-            return list;
-        }
-
-        [HttpGet]
-        public IEnumerable<Settlements> GetSettlements(int id)
-        {
-            var list = _dbContext.Settlements
-                .Where(m => m.AreaId == id)
-                .ToList();
-
-            return list;
-        }
+        //[HttpGet]
+        //public IEnumerable<City> GetCitiesByAreaId(int areaId)
+        //{
+            
+        //}
     }
 }

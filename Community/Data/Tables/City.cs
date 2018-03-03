@@ -3,11 +3,11 @@ using System.Collections.Generic;
 
 namespace Community.Data
 {
-    public class Settlements
+    public class City
     {
         public int Id { get; set; }
         public int AreaId { get; set; }
-        public string City { get; set; }
+        public string Name { get; set; }
         public ICollection<Meeting> Meetings { get; set; }
     }
 }

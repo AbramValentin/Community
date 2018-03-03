@@ -4,26 +4,29 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
+using Microsoft.EntityFrameworkCore.Storage;
+using Microsoft.EntityFrameworkCore.Storage.Internal;
 using System;
 
 namespace Community.Migrations
 {
     [DbContext(typeof(CommunityDbContext))]
-    partial class CommunityDbContextModelSnapshot : ModelSnapshot
+    [Migration("20180302153735_AddBoolFieldApprovedToUserMeetings")]
+    partial class AddBoolFieldApprovedToUserMeetings
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("ProductVersion", "2.0.0-rtm-26452")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-            modelBuilder.Entity("Community.Data.Area", b =>
+            modelBuilder.Entity("Community.Data.Areas", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<string>("Name");
+                    b.Property<string>("Area");
 
                     b.Property<int>("RegionId");
 
@@ -32,30 +35,30 @@ namespace Community.Migrations
                     b.ToTable("Areas");
                 });
 
-            modelBuilder.Entity("Community.Data.City", b =>
+            modelBuilder.Entity("Community.Data.Regions", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<string>("Region");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Regions");
+                });
+
+            modelBuilder.Entity("Community.Data.Settlements", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
 
                     b.Property<int>("AreaId");
 
-                    b.Property<string>("Name");
+                    b.Property<string>("City");
 
                     b.HasKey("Id");
 
-                    b.ToTable("Cities");
-                });
-
-            modelBuilder.Entity("Community.Data.Region", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<string>("Name");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Regions");
+                    b.ToTable("Settlements");
                 });
 
             modelBuilder.Entity("Community.Data.Tables.Meeting", b =>
@@ -63,14 +66,8 @@ namespace Community.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<int>("CitiesId");
-
-                    b.Property<int?>("CityId");
-
                     b.Property<string>("Description")
                         .HasMaxLength(2000);
-
-                    b.Property<string>("EndTime");
 
                     b.Property<int>("MeetingCategoryId");
 
@@ -81,18 +78,22 @@ namespace Community.Migrations
 
                     b.Property<string>("PhotoPath");
 
-                    b.Property<string>("StartTime");
+                    b.Property<int>("SettlementsId");
 
                     b.Property<string>("Street")
                         .HasMaxLength(30);
 
                     b.Property<string>("UserId");
 
+                    b.Property<int?>("UsersMax");
+
+                    b.Property<int?>("UsersMin");
+
                     b.HasKey("Id");
 
-                    b.HasIndex("CityId");
-
                     b.HasIndex("MeetingCategoryId");
+
+                    b.HasIndex("SettlementsId");
 
                     b.HasIndex("UserId");
 
@@ -294,13 +295,14 @@ namespace Community.Migrations
 
             modelBuilder.Entity("Community.Data.Tables.Meeting", b =>
                 {
-                    b.HasOne("Community.Data.City")
-                        .WithMany("Meetings")
-                        .HasForeignKey("CityId");
-
                     b.HasOne("Community.Data.Tables.MeetingCategory")
                         .WithMany("Meetings")
                         .HasForeignKey("MeetingCategoryId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("Community.Data.Settlements")
+                        .WithMany("Meetings")
+                        .HasForeignKey("SettlementsId")
                         .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("Community.Data.Tables.User")

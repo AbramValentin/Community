@@ -31,12 +31,11 @@ namespace Community
         {
             services.AddTransient<IEmailSender, EmailSender>();
             services.AddTransient<MeetingManager>();
-
+          
             services.AddDbContext<CommunityDbContext>(options => {
                 options.UseSqlServer(_configuration.GetConnectionString("SqlServerString"));
                 }
             );
-
 
             services.AddIdentity<User, IdentityRole>(options =>
                 {
@@ -50,7 +49,6 @@ namespace Community
             )
             .AddEntityFrameworkStores<CommunityDbContext>()
             .AddDefaultTokenProviders();
-
    
             services.AddMvc();
         }

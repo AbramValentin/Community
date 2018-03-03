@@ -27,13 +27,13 @@ namespace Community.ModelViews.MeetingViewModels
         [DataType(DataType.ImageUrl)]
         public string PhotoPath { get; set; }
 
-        public int? RegionId { get; set; }
+        public int RegionId { get; set; }
         public IEnumerable<Location> RegionList { get; set; }
 
-        public int? AreaId { get; set; }
+        public int AreaId { get; set; }
         public IEnumerable<Location> AreaList { get; set; }
 
-        public int? CityId { get; set; }
+        public int CityId { get; set; }
         public IEnumerable<Location> CityList { get; set; }
 
         [StringLength(maximumLength: 30, MinimumLength = 3)]
