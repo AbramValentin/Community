@@ -11,6 +11,7 @@ namespace Community.Data
     {
         public DbSet<Meeting> Meetings { get; set; }
         public DbSet<MeetingCategory> MeetingCategories { get; set; }
+        public DbSet<UserMeetings> UserMeetings { get; set; }
 
         //UA_CitiesDb (Already created)
         public virtual DbSet<Area> Areas { get; set; }

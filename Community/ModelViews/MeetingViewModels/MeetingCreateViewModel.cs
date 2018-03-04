@@ -39,7 +39,7 @@ namespace Community.ModelViews.MeetingViewModels
         [StringLength(maximumLength: 30, MinimumLength = 3)]
         public string Street { get; set; }
 
-        public int CategoryId { get; set; }
+        public int MeetingCategoryId { get; set; }
         public IEnumerable<MeetingCategory> MeetingCategories { get; set; }
 
     }

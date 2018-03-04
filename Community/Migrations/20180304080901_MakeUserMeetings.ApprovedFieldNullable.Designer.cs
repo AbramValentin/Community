@@ -11,8 +11,8 @@ using System;
 namespace Community.Migrations
 {
     [DbContext(typeof(CommunityDbContext))]
-    [Migration("20180303195059_ChangesInDb")]
-    partial class ChangesInDb
+    [Migration("20180304080901_MakeUserMeetings.ApprovedFieldNullable")]
+    partial class MakeUserMeetingsApprovedFieldNullable
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -178,7 +178,7 @@ namespace Community.Migrations
 
                     b.Property<int>("MeetingId");
 
-                    b.Property<bool>("Approved");
+                    b.Property<bool?>("Approved");
 
                     b.HasKey("UserId", "MeetingId");
 

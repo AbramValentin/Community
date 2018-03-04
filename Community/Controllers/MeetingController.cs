@@ -32,6 +32,46 @@ namespace Community.Controllers
 
 
         [HttpGet]
+        public IActionResult Create()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Create(MeetingCreateViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            var userId = _userManager.GetUserId(User);
+
+            var meeting = new Meeting
+            {
+                Name = model.Name,
+                Description = model.Description,
+                CitiesId = model.CityId,
+                EndTime = model.EndTime,
+                StartTime = model.StartTime,
+                MeetingCategoryId = model.MeetingCategoryId,
+                MeetingDate = model.MeetingDate,
+                PhotoPath = model.PhotoPath,
+                Street = model.Street,
+                UserId = userId,
+            };
+
+            var result = await _meetingManager.CreateAsync(meeting);
+
+            if (result == OperationResult.Failed)
+            {
+                return View(model);
+            }
+
+            return View(nameof(HomeController.Index));
+        }
+
+        [HttpGet]
         public async Task<IActionResult> EditMeeting(int meetingId)
         {
             var meeting = _meetingQuery.GetMeetingById(meetingId);
@@ -62,11 +102,15 @@ namespace Community.Controllers
             return View(model);
         }
 
-
         
          [HttpPost]
          public async Task<IActionResult> EditMeeting(MeetingEditViewModel model)
          {
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
             var meeting = new Meeting
             {
                 Id = model.Id,
@@ -89,11 +133,51 @@ namespace Community.Controllers
                 return View(model);
             }
 
-            return View("Index","Home");
-         }
-        
+            return View(nameof(HomeController.Index));
+        }
 
+        /* !!!! OWNER CONFIRMATION REQUIRED ~!!!! */
+        [HttpGet]
+        public async Task<IActionResult> Delete(int meetingId)
+        {
+            var meeting = _meetingQuery.GetMeetingById(meetingId);
+            var result = await _meetingManager.RemoveAsync(meeting);
 
+            if (result == OperationResult.Failed)
+            {
+                return Content("o_O ... Something happens ...");
+            }
+
+            return View(nameof(HomeController.Index));
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Join(int meetingId)
+        {
+            var userId = _userManager.GetUserId(User);
+            var result = await _meetingManager.JoinMeetingAsync(meetingId, userId);
+
+            if (result == OperationResult.Failed)
+            {
+                return Content("Joining failed");
+            }
+
+            return View(nameof(HomeController.Index));
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Unjoin(int meetingId)
+        {
+            var userId = _userManager.GetUserId(User);
+            var result = await _meetingManager.UnjoinMeetingAsync(meetingId, userId);
+
+            if (result == OperationResult.Failed)
+            {
+                return Content("Unjoining failed");
+            }
+
+            return View(nameof(HomeController.Index));
+        }
 
     }
 }

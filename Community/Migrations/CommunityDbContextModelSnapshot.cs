@@ -4,6 +4,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
+using Microsoft.EntityFrameworkCore.Storage;
+using Microsoft.EntityFrameworkCore.Storage.Internal;
 using System;
 
 namespace Community.Migrations
@@ -175,7 +177,7 @@ namespace Community.Migrations
 
                     b.Property<int>("MeetingId");
 
-                    b.Property<bool>("Approved");
+                    b.Property<bool?>("Approved");
 
                     b.HasKey("UserId", "MeetingId");
 

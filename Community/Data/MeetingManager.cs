@@ -76,6 +76,37 @@ namespace Community.Data
         }
 
 
+        public async Task<OperationResult> JoinMeetingAsync(int meetingId, string userId)
+        {
+            var entity = new UserMeetings
+            {
+                MeetingId = meetingId,
+                UserId = userId,
+                Approved = false
+            };
+
+            await _db.UserMeetings.AddAsync(entity);
+            await _db.SaveChangesAsync();
+
+            return OperationResult.Success;
+        }
+
+        public async Task<OperationResult> UnjoinMeetingAsync(int meetingId, string userId)
+        {
+            var entity = new UserMeetings
+            {
+                MeetingId = meetingId,
+                UserId = userId,
+            };
+
+            _db.UserMeetings.Remove(entity);
+            await _db.SaveChangesAsync();
+
+            return OperationResult.Success;
+        }
+
+
+
         //public async Task<MeetingEditModel> GetMeetingEditModelById(int idMeeting)
         //{
         //    var meeting = _db.Meetings.Where(m => m.Id == idMeeting).Single();
