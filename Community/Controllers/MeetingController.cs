@@ -46,12 +46,14 @@ namespace Community.Controllers
             }
 
             var userId = _userManager.GetUserId(User);
+            var cityId = _locationQuery.GetCityByName(model.City);
+
 
             var meeting = new Meeting
             {
                 Name = model.Name,
                 Description = model.Description,
-                CitiesId = model.CityId,
+                CitiesId = cityId.Id,
                 EndTime = model.EndTime,
                 StartTime = model.StartTime,
                 MeetingCategoryId = model.MeetingCategoryId,

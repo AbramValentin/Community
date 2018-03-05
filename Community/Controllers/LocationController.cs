@@ -8,28 +8,21 @@ namespace Community.Controllers
     public class LocationController : Controller
     {
         private readonly LocationQuery _locationQuery;
+        private readonly CommunityDbContext _dbContext;
 
-        public LocationController(LocationQuery locationQuery)
+        public LocationController(LocationQuery locationQuery, CommunityDbContext dbContext)
         {
             _locationQuery = locationQuery;
+            _dbContext = dbContext;
         }
 
-        //[HttpGet]
-        //public IEnumerable<Region> GetRegions()
-        //{
-            
-        //}
+        [HttpGet]
+        public JsonResult Autocomplete(string term)
+        {
+            var model = _locationQuery
+                .GetCityStartsWith(term);
 
-        //[HttpGet]
-        //public IEnumerable<Area> GetAreasByRegionId(int regionId)
-        //{
-            
-        //}
-
-        //[HttpGet]
-        //public IEnumerable<City> GetCitiesByAreaId(int areaId)
-        //{
-            
-        //}
+            return Json(model);
+        }
     }
 }

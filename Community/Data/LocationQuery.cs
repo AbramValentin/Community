@@ -3,16 +3,44 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Mvc;
+using Community.Data.Models;
+using System.Globalization;
 
 namespace Community.Data
 {
     public class LocationQuery
     {
         private CommunityDbContext _db;
+        public List<Location> _locations = new List<Location>();
+
 
         public LocationQuery(CommunityDbContext db)
         {
             _db = db;
+
+            _locations = new List<Location>
+            {
+                new Location{ Id = 1, Name = "Ківерці" },
+                new Location{ Id = 2, Name = "Луцьк" },
+                new Location{ Id = 3, Name = "Київ" },
+                new Location{ Id = 4, Name = "Кіровоград" },
+                new Location{ Id = 5, Name = "Кременець" },
+                new Location{ Id = 6, Name = "Луганськ" },
+                new Location{ Id = 7, Name = "Липне" },
+                new Location{ Id = 8, Name = "Дніпропетровськ" },
+            };
+        }
+
+        public object GetCityStartsWith(string term)
+        {
+            var result = _db
+                .Cities
+                .Where(m => m.Name.StartsWith(term, StringComparison.CurrentCultureIgnoreCase))
+                .Take(10)
+                .Select(m => new { label = m.Name });
+
+            return result;
         }
 
         public async Task<Area> GetAreaById(int areaId)
@@ -31,6 +59,15 @@ namespace Community.Data
                 .Cities
                 .Where(c => c.Id == cityId)
                 .SingleAsync();
+
+            return city;
+        }
+
+        public  City GetCityByName(string cityName)
+        {
+            var city =  _db.Cities
+                .Where(m => m.Name == cityName)
+                .Single();
 
             return city;
         }

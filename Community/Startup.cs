@@ -30,8 +30,13 @@ namespace Community
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddTransient<IEmailSender, EmailSender>();
+
             services.AddTransient<MeetingManager>();
-          
+            services.AddTransient<MeetingQuery>();
+            services.AddTransient<LocationQuery>();
+
+
+
             services.AddDbContext<CommunityDbContext>(options => {
                 options.UseSqlServer(_configuration.GetConnectionString("SqlServerString"));
                 }
