@@ -1,5 +1,5 @@
-﻿using Community.Data.Models;
-using Community.Data.Tables;
+﻿using Community.Data.Tables;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -22,6 +22,23 @@ namespace Community.Data
         /// </summary>
         /// <param name="meeting">Object to create in database.</param>
         /// <returns></returns>
+        public async Task<bool> CheckMeetingOwner(int meetingId, string userId)
+        {
+            if (string.IsNullOrEmpty(userId))
+            {
+                return false;
+            }
+
+            var meeting = await _db.Meetings.FindAsync(meetingId);
+
+            if (meeting == null)
+            {
+                throw new Exception("meeting with such primary key is not fount (Valentin)");
+            }
+
+            return meeting.UserId == userId ? true : false ;
+        }
+
         public async Task<OperationResult> CreateAsync(Meeting meeting)
         {
             if (meeting == null)
@@ -76,8 +93,32 @@ namespace Community.Data
         }
 
 
+        public async Task<bool> IsUserJoinedMeeting(int meetingId, string userId)
+        {
+            if (await _db.Users.FindAsync(userId) == null)
+            {
+                throw new Exception("user with such id does not exist");
+            }
+
+            if (await _db.Meetings.FindAsync(meetingId) == null)
+            {
+                throw new Exception("meeting with such id does not exist");
+            }
+
+            var count = await _db.UserMeetings
+                .Where(m => m.MeetingId == meetingId && m.UserId == userId)
+                .CountAsync();
+
+            return count != 0 ? true : false ;
+        }
+
         public async Task<OperationResult> JoinMeetingAsync(int meetingId, string userId)
         {
+            if (await IsUserJoinedMeeting(meetingId, userId) == true)
+            {
+                return OperationResult.Failed;
+            }
+
             var entity = new UserMeetings
             {
                 MeetingId = meetingId,
@@ -93,6 +134,11 @@ namespace Community.Data
 
         public async Task<OperationResult> UnjoinMeetingAsync(int meetingId, string userId)
         {
+            if (await IsUserJoinedMeeting(meetingId, userId) == true)
+            {
+                return OperationResult.Failed;
+            } 
+
             var entity = new UserMeetings
             {
                 MeetingId = meetingId,
@@ -105,68 +151,6 @@ namespace Community.Data
             return OperationResult.Success;
         }
 
-
-
-        //public async Task<MeetingEditModel> GetMeetingEditModelById(int idMeeting)
-        //{
-        //    var meeting = _db.Meetings.Where(m => m.Id == idMeeting).Single();
-
-        //    /*var regionId = _locationQuery.GetRegionByCityId(meeting.CityId).Id;*/
-        //    /*var areaId = _locationQuery.GetAreaByCityId(meeting.CityId).Id;*/
-        //    /*var areasList = _locationQuery.GetAreasByRegionId(regionId);*/
-        //    /*var regionsList = _locationQuery.GetRegions();*/
-        //    /*var citiesList = _locationQuery.GetCitiesByAreaId(areaId);*/
-
-        //    var meetingModel = new MeetingEditModel
-        //    {
-        //        Id = meeting.Id,
-        //        Name = meeting.Name,
-        //        MeetingDate = meeting.MeetingDate,
-        //        Description = meeting.Description,
-        //        StartTime = "start hardcode",
-        //        EndTime = "end hardcode",
-        //        PhotoPath = meeting.PhotoPath,
-        //        RegionId = 
-
-        //    };
-        //}
-
-    }
-
-    public class MeetingEditModel
-    {
-        public int Id { get; set; }
-
-        [StringLength(maximumLength: 25, MinimumLength = 5)]
-        public string Name { get; set; }
-
-        [DataType(DataType.Date)]
-        public DateTime MeetingDate { get; set; }
-
-        [StringLength(maximumLength: 2000, MinimumLength = 20)]
-        public string Description { get; set; }
-
-        public string StartTime { get; set; }
-
-        public string EndTime { get; set; }
-
-        [DataType(DataType.ImageUrl)]
-        public string PhotoPath { get; set; }
-
-        public int? RegionId { get; set; }
-        public IEnumerable<Location> RegionList { get; set; }
-
-        public int? AreaId { get; set; }
-        public IEnumerable<Location> AreaList { get; set; }
-
-        public int? CityId { get; set; }
-        public IEnumerable<Location> CityList { get; set; }
-
-        [StringLength(maximumLength: 30, MinimumLength = 3)]
-        public string Street { get; set; }
-
-        public int CategoryId { get; set; }
-        public IEnumerable<MeetingCategory> MeetingCategories { get; set; }
     }
 
     public enum OperationResult

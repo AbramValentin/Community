@@ -11,9 +11,10 @@ using System;
 namespace Community.Migrations
 {
     [DbContext(typeof(CommunityDbContext))]
-    partial class CommunityDbContextModelSnapshot : ModelSnapshot
+    [Migration("20180306112302_MeetingTableStartAndEndTimeFieldsFromStringToTimeSpanType")]
+    partial class MeetingTableStartAndEndTimeFieldsFromStringToTimeSpanType
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -72,6 +73,8 @@ namespace Community.Migrations
                     b.Property<string>("Description")
                         .HasMaxLength(2000);
 
+                    b.Property<TimeSpan>("EndTime");
+
                     b.Property<int>("MeetingCategoryId");
 
                     b.Property<DateTime>("MeetingDate");
@@ -80,6 +83,11 @@ namespace Community.Migrations
                         .HasMaxLength(25);
 
                     b.Property<string>("PhotoPath");
+
+                    b.Property<TimeSpan>("StartTime");
+
+                    b.Property<string>("Street")
+                        .HasMaxLength(30);
 
                     b.Property<string>("UserId");
 

@@ -1,52 +1,73 @@
-﻿using Community.Data.Models;
-using Community.Data.Tables;
+﻿using Community.Data.Tables;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
 namespace Community.ModelViews.MeetingViewModels
 {
+    [MeetingEditValidator]
     public class MeetingEditViewModel
     {
+        [HiddenInput]
         public int Id { get; set; }
 
-        public string UserId { get; set; }
-
+        [Required]
         [StringLength(maximumLength: 25, MinimumLength = 5)]
+        [Display(Name = "Name of event")]
         public string Name { get; set; }
 
+        [Required]
         [DataType(DataType.Date)]
+        [Display(Name = "Date of event")]
         public DateTime MeetingDate { get; set; }
 
+        [Required]
         [StringLength(maximumLength: 2000, MinimumLength = 20)]
+        [Display(Name = "Description")]
         public string Description { get; set; }
 
-        public string CityName { get; set; }
+        public string currentPhotoPath { get; set; }
 
-        [StringLength(maximumLength: 30, MinimumLength = 3)]
-        public string Street { get; set; }
+        [Display(Name = "Photo")]
+        public IFormFile PhotoSource { get; set; }
 
-        public string StartTime { get; set; }
-
-        public string EndTime { get; set; }
-
-        [DataType(DataType.ImageUrl)]
-        public string PhotoPath { get; set; }
-
+        [Required]
+        [Display(Name = "Category")]
         public int MeetingCategoryId { get; set; }
         public IEnumerable<MeetingCategory> MeetingCategories { get; set; }
 
-        public int RegionId { get; set; }
-        public IEnumerable<Location> RegionList { get; set; }
+    }
 
-        public int AreaId { get; set; }
-        public IEnumerable<Location> AreaList { get; set; }
+    public class MeetingEditValidator : ValidationAttribute
+    {
+        protected override ValidationResult IsValid(object value, ValidationContext validationContext)
+        {
+            MeetingEditViewModel model = (MeetingEditViewModel)validationContext.ObjectInstance;
 
-        public int CityId { get; set; }
-        public IEnumerable<Location> CityList { get; set; }
+            if (model.PhotoSource != null)
+            {
+                if (model.PhotoSource.Length > 500 * 1024)
+                {
+                    return new ValidationResult("File size cant be beeger than 500 kb");
+                }
 
+                string[] allowedExtensions = { ".jpeg", ".png", ".jpg" };
+                string fileExt = Path.GetExtension(model.PhotoSource.FileName);
+                if (!allowedExtensions.Contains(fileExt))
+                {
+                    return new ValidationResult("File format is not supported , available is : .jpg .jpeg .png");
+                }
+            }
+
+            /*ADD CITY VALIDATION , IF CITY DOES NOT EXITST : RETURN VALIDATION ERROR*/
+
+            return ValidationResult.Success;
+        }
 
     }
 }

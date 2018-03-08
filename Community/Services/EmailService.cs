@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Community.Services
 {
-    public class EmailSender : IEmailSender
+    public class EmailServise : IEmailService
     {
         public async Task SendEmailAsync(string email, string subject, string body)
         {

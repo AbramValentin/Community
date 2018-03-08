@@ -20,16 +20,9 @@ namespace Community.Data.Tables
         [StringLength(maximumLength: 2000, MinimumLength = 20)]
         public string Description { get; set; }
 
-        public string StartTime { get; set; }
-
-        public string EndTime { get; set; }
-
         public string PhotoPath { get; set; }
 
         public int CitiesId { get; set; }
-
-        [StringLength(maximumLength: 30, MinimumLength = 3)]
-        public string Street { get; set; }
 
         public string UserId { get; set; }
 

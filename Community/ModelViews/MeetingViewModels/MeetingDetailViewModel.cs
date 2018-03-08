@@ -8,11 +8,14 @@ namespace Community.ModelViews.MeetingViewModels
 {
     public class MeetingDetailViewModel
     {
-        public string Id { get; set; }
+        public int Id { get; set; }
 
+        [DataType(DataType.ImageUrl)]
         public string PhotoPath { get; set; }
 
         public string Name { get; set; }
+
+        public string Description { get; set; }
 
         public string Category { get; set; }
 
@@ -24,12 +27,6 @@ namespace Community.ModelViews.MeetingViewModels
 
         public string Date { get; set; }
 
-        public string StartTime { get; set; }
-
-        public string EndTime { get; set; }
-
-        public int UserJoined { get; set; }
-
-        public string Description { get; set; }
+        public bool UserJoined { get; set; }
     }
 }

@@ -43,9 +43,10 @@ namespace Community.Data
         /// </summary>
         /// <param name="meetingId">Id of meeting to get.</param>
         /// <returns></returns>
-        public Meeting GetMeetingById(int meetingId)
+        public async Task<Meeting> GetMeetingByIdAsync(int meetingId)
         {
-            throw new NotImplementedException();
+            var meeting = await _db.Meetings.FindAsync(meetingId);
+            return meeting;
         }
 
 

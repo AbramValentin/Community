@@ -29,7 +29,7 @@ namespace Community
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddTransient<IEmailSender, EmailSender>();
+            services.AddTransient<IEmailService, EmailServise>();
 
             services.AddTransient<MeetingManager>();
             services.AddTransient<MeetingQuery>();
@@ -37,7 +37,7 @@ namespace Community
 
 
 
-            services.AddDbContext<CommunityDbContext>(options => {
+            services.AddDbContext<CommunityDbContext>(options =>{
                 options.UseSqlServer(_configuration.GetConnectionString("SqlServerString"));
                 }
             );

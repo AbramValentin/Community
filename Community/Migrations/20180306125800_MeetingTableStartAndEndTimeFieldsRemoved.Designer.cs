@@ -11,9 +11,10 @@ using System;
 namespace Community.Migrations
 {
     [DbContext(typeof(CommunityDbContext))]
-    partial class CommunityDbContextModelSnapshot : ModelSnapshot
+    [Migration("20180306125800_MeetingTableStartAndEndTimeFieldsRemoved")]
+    partial class MeetingTableStartAndEndTimeFieldsRemoved
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -80,6 +81,9 @@ namespace Community.Migrations
                         .HasMaxLength(25);
 
                     b.Property<string>("PhotoPath");
+
+                    b.Property<string>("Street")
+                        .HasMaxLength(30);
 
                     b.Property<string>("UserId");
 

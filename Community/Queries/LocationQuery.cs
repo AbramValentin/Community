@@ -4,7 +4,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc;
-using Community.Data.Models;
 using System.Globalization;
 
 namespace Community.Data
@@ -12,24 +11,11 @@ namespace Community.Data
     public class LocationQuery
     {
         private CommunityDbContext _db;
-        public List<Location> _locations = new List<Location>();
 
 
         public LocationQuery(CommunityDbContext db)
         {
             _db = db;
-
-            _locations = new List<Location>
-            {
-                new Location{ Id = 1, Name = "Ківерці" },
-                new Location{ Id = 2, Name = "Луцьк" },
-                new Location{ Id = 3, Name = "Київ" },
-                new Location{ Id = 4, Name = "Кіровоград" },
-                new Location{ Id = 5, Name = "Кременець" },
-                new Location{ Id = 6, Name = "Луганськ" },
-                new Location{ Id = 7, Name = "Липне" },
-                new Location{ Id = 8, Name = "Дніпропетровськ" },
-            };
         }
 
         public object GetCityStartsWith(string term)
@@ -38,7 +24,7 @@ namespace Community.Data
                 .Cities
                 .Where(m => m.Name.StartsWith(term, StringComparison.CurrentCultureIgnoreCase))
                 .Take(10)
-                .Select(m => new { label = m.Name });
+                .Select(m => new {value = m.Name, label = m.Name , custom = m.Id });
 
             return result;
         }
@@ -53,7 +39,7 @@ namespace Community.Data
             return area;
         }
 
-        public async Task<City> GetCityById(int cityId)
+        public async Task<City> GetCityByIdAsync(int cityId)
         {
             var city = await _db
                 .Cities
@@ -92,7 +78,7 @@ namespace Community.Data
 
         public async Task<Region> GetRegionByCityId(int cityId)
         {
-            var city = await GetCityById(cityId);
+            var city = await GetCityByIdAsync(cityId);
             var area = await GetAreaById(city.AreaId);
             var region = await GetRegionById(area.RegionId);
 
@@ -101,7 +87,7 @@ namespace Community.Data
 
         public async Task<Area> GetAreaByCityId(int cityId)
         {
-            var city = await GetCityById(cityId);
+            var city = await GetCityByIdAsync(cityId);
             var area = await GetAreaById(city.AreaId);
 
             return area;
