@@ -1,0 +1,103 @@
+﻿@model IEnumerable<GeneralMeetingInfoViewModel>
+
+
+<div class="container-fluid">
+
+    @foreach (var item in Model)
+    {
+        <div class="row">
+            <div class="col-sm-10 col-md-10">
+                <div class="thumbnail">
+                    <div class="row">
+                        <div class="col-sm-4">
+                            <img src="@item.PhotoPath" alt="..." width="150" height="100">
+                        </div>
+                        <div class="col-sm-8">
+                            <div class="caption">
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <p>@item.Name</p>
+                                        <p>Category : @item.CategoryName</p>
+                                        <p>Date : @item.ShortDateString</p>
+                                        <p>City : @item.CityName</p>
+                                    </div>
+                                    <div class="col-sm-6">
+
+                                        <p>Accepted users : @item.ConfirmedUsersRequests</p>
+
+                                        <div class="dropdown">
+
+                                            <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                                                more actions
+                                                <span class="caret"></span>
+                                            </button>
+                                            <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+                                                <li><a asp-controller="Meeting" asp-action="GeneralMeetingInfo" asp-route-meetingId="@item.Id">Info</a></li>
+                                                <li>
+                                                    @{
+                                                        await Html.RenderPartialAsync("~/Views/Meeting/_UserSubscriptionPartial.cshtml",item.Id);
+                                                    }
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+<script>
+    /* !!! ATTENTION THIS SCRIPT IS NOT OPTIMIZED !!! */
+    $(document).ready(function () {
+
+        
+        SubscribeElements();
+
+        function SubscribeElements() {
+
+            var subscribeBtn = $('.subscribeBtn');
+            var unsubscribeBtn = $('.unsubscribeBtn');
+            var subscriptionArea = $('.subscriptionArea');
+
+            $(subscribeBtn).on('click', function (event) {
+                event.preventDefault();
+                var meetingId = $(this).attr('data-meetingId');
+                let obj = $(this);
+
+                $.ajax(
+                    {
+                        url: 'SubscribeMeeting?meetingId=' + meetingId
+                    })
+                    .done(function (data) {
+                        obj.parent().html(data);
+                        SubscribeElements();
+                    });
+            });
+
+
+            $(unsubscribeBtn).on('click', function (event) {
+                event.preventDefault();
+                var meetingId = $(this).attr('data-meetingId');
+                let obj = $(this);
+
+                $.ajax(
+                    {
+                        url: 'UnsubscribeMeeting?meetingId=' + meetingId
+                    })
+                    .done(function (data) {
+                        obj.parent().html(data);
+                        SubscribeElements();
+                    });
+
+            });
+         }
+
+            
+            
+        
+    });
+</script>

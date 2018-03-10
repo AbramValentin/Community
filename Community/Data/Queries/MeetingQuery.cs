@@ -17,13 +17,78 @@ namespace Community.Data
         }
 
         /// <summary>
+        /// Checks if particular user is creator of particular meeting.
+        /// Returns true if user created this meeting and false if not.
+        /// </summary>
+        /// <param name="meetingId">Id of meeting to check.</param>
+        /// <param name="userId">Id of user to check.</param>
+        /// <returns></returns>
+        public async Task<bool> CheckMeetingOwner(int meetingId, string userId)
+        {
+            if (string.IsNullOrEmpty(userId))
+            {
+                return false;
+            }
+
+            var meeting = await _db.Meetings.FindAsync(meetingId);
+
+            if (meeting == null)
+            {
+                throw new Exception("meeting with such primary key is not fount (Valentin)");
+            }
+
+            return meeting.UserId == userId ? true : false;
+        }
+
+        public async Task<bool> IsUserSubscribedMeeting(int meetingId, string userId)
+        {
+            if (await _db.Users.FindAsync(userId) == null)
+            {
+                throw new Exception("user with such id does not exist");
+            }
+
+            if (await _db.Meetings.FindAsync(meetingId) == null)
+            {
+                throw new Exception("meeting with such id does not exist");
+            }
+
+            var count = await _db.UserMeetings
+                .Where(m => m.MeetingId == meetingId && m.UserId == userId)
+                .CountAsync();
+
+            return count != 0 ? true : false;
+        }
+
+        public async Task<int> GetMeetingConfirmedUsersCount(int meetingId)
+        {
+            var count = await _db.UserMeetings
+                .Where(m => m.MeetingId == meetingId && m.Approved == true)
+                .CountAsync();
+
+            return count;
+        }
+
+        public async Task<int> GetMeetingUnconfirmedUsersCount(int meetingId)
+        {
+            var count = await _db.UserMeetings
+                .Where(m => m.MeetingId == meetingId && m.Approved == false)
+                .CountAsync();
+
+            return count;
+        }
+
+        /// <summary>
         /// Returns meetings created by user.
         /// </summary>
         /// <param name="idUser">Id of user.</param>
         /// <returns></returns>
-        public IEnumerable<Meeting> GetUserCreatedMeetings(string idUser)
+        public async Task<IEnumerable<Meeting>> GetUserCreatedMeetings(string idUser)
         {
-            throw new NotImplementedException();
+            var meetingList = await _db.Meetings
+                .Where(m => m.UserId == idUser)
+                .ToListAsync();
+
+            return meetingList;
         }
 
 
@@ -32,9 +97,17 @@ namespace Community.Data
         /// </summary>
         /// <param name="idUser">Id of user.</param>
         /// <returns></returns>
-        public IEnumerable<Meeting> GetUserJoinedMeetings(string idUser)
+        public async Task<IEnumerable<Meeting>> GetUserSubscribedMeetings(string userId)
         {
-            throw new NotImplementedException();
+            var result = from m in _db.Meetings
+                         join um in _db.UserMeetings
+                         on m.Id equals um.MeetingId
+                         into joinedMeetings
+                         from jm in joinedMeetings
+                         where jm.UserId == userId
+                         select m;
+
+            return await result.ToListAsync();
         }
 
 
@@ -55,9 +128,13 @@ namespace Community.Data
         /// </summary>
         /// <param name="amount">Amount of meetings to get.</param>
         /// <returns></returns>
-        public IEnumerable<Meeting> GetLastRegisteredMeetings(int amount)
+        public async Task<IEnumerable<Meeting>> GetLastRegisteredMeetingsAsync(int amount)
         {
-            throw new NotImplementedException();
+            var meetingList = await _db.Meetings
+                .Take(amount)
+                .ToListAsync();
+
+            return meetingList;
         }
 
         /// <summary>

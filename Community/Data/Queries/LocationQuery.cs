@@ -44,7 +44,7 @@ namespace Community.Data
             var city = await _db
                 .Cities
                 .Where(c => c.Id == cityId)
-                .SingleAsync();
+                .FirstOrDefaultAsync();
 
             return city;
         }

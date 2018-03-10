@@ -45,7 +45,13 @@ namespace Community
         {
             if(ModelState.IsValid)
             {
-                var user = new User { Email = model.Email, UserName = $"{model.Firstname} {model.Lastname}" };
+                var user = new User {
+                    Email = model.Email,
+                    UserName = model.Email,
+                    UserFirstName = model.Firstname,
+                    UserLastName = model.Lastname
+                };
+
                 var result = await _userManager.CreateAsync(user, model.Password);
 
                 if (result.Succeeded)
@@ -81,6 +87,11 @@ namespace Community
                 // To enable password failures to trigger account lockout, set lockoutOnFailure: true
                 
                 var user = await _userManager.FindByEmailAsync(model.Email);
+
+                if (user == null)
+                {
+                    return View();
+                }
 
                 var result = await _signInManager.PasswordSignInAsync(user.UserName, model.Password, model.RememberMe, lockoutOnFailure: false);
                 if (result.Succeeded)

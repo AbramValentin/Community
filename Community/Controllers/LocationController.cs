@@ -8,12 +8,10 @@ namespace Community.Controllers
     public class LocationController : Controller
     {
         private readonly LocationQuery _locationQuery;
-        private readonly CommunityDbContext _dbContext;
 
-        public LocationController(LocationQuery locationQuery, CommunityDbContext dbContext)
+        public LocationController(LocationQuery locationQuery)
         {
             _locationQuery = locationQuery;
-            _dbContext = dbContext;
         }
 
         [HttpGet]

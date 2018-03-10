@@ -11,9 +11,10 @@ using System;
 namespace Community.Migrations
 {
     [DbContext(typeof(CommunityDbContext))]
-    partial class CommunityDbContextModelSnapshot : ModelSnapshot
+    [Migration("20180309124701_TableAspNetUsersAddedFirstNameAndLastNameColums")]
+    partial class TableAspNetUsersAddedFirstNameAndLastNameColums
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

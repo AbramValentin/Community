@@ -1,18 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Community.ModelViews.MeetingViewModels;
 using Community.Data;
 using Community.Data.Tables;
 using Microsoft.AspNetCore.Identity;
 using Community.Services;
-using System.IO;
-using Microsoft.AspNetCore.Http;
+using Community.ViewModels.MeetingViewModels;
+using System.Collections.Generic;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Community.Controllers
 {
+    [Authorize]
     public class MeetingController : Controller
     {
         private readonly MeetingManager _meetingManager;
@@ -21,21 +20,153 @@ namespace Community.Controllers
         private readonly LocationQuery _locationQuery;
 
         public MeetingController(
-            MeetingManager meetingManager,
             UserManager<User> userManager,
+            MeetingManager meetingManager,
             MeetingQuery meetingQuery,
             LocationQuery locationQuery
             )
         {
-             _meetingManager = meetingManager;
             _userManager = userManager;
+            _meetingManager = meetingManager;
             _meetingQuery = meetingQuery;
             _locationQuery = locationQuery;
         }
 
+        [HttpGet]
+        public async Task<IActionResult> MyMeetings()
+        {
+            var userId = _userManager.GetUserId(User);
+            var userMeetings = await _meetingQuery.GetUserCreatedMeetings(userId);
+
+
+            List<MyMeetingInfoViewModel> modelList = new List<MyMeetingInfoViewModel>();
+
+            foreach (var item in userMeetings)
+            {
+                modelList.Add(
+                    new MyMeetingInfoViewModel
+                    {
+                        Id = item.Id,
+
+                        Name = item.Name,
+
+                        CategoryName = (await _meetingQuery.GetMeetingCategoryByIdAsync(item.MeetingCategoryId)).Name,
+
+                        CityName = (await _locationQuery.GetCityByIdAsync(item.CitiesId)).Name,
+
+                        ConfirmedUsersRequests = await _meetingQuery.GetMeetingConfirmedUsersCount(item.Id),
+
+                        UnconfirmedUsersRequests = await _meetingQuery.GetMeetingUnconfirmedUsersCount(item.Id),
+
+                        PhotoPath = item.PhotoPath,
+
+                        ShortDateString = item.MeetingDate.ToShortDateString()
+                    });
+            }
+
+            return View(modelList);
+        }
 
         [HttpGet]
-        public async Task<IActionResult> Create()
+        public async Task<IActionResult> SubscribedMeetings()
+        {
+            var userId = _userManager.GetUserId(User);
+            var userMeetings = await _meetingQuery.GetUserSubscribedMeetings(userId);
+
+            List<GeneralMeetingInfoViewModel> modelList = new List<GeneralMeetingInfoViewModel>();
+
+            foreach (var item in userMeetings)
+            {
+                modelList.Add(
+                    new GeneralMeetingInfoViewModel
+                    {
+                        Id = item.Id,
+
+                        Name = item.Name,
+
+                        CityName = (await _locationQuery.GetCityByIdAsync(item.CitiesId)).Name,
+
+                        CategoryName = (await _meetingQuery.GetMeetingCategoryByIdAsync(item.MeetingCategoryId)).Name,
+
+                        ConfirmedUsersRequests = await _meetingQuery.GetMeetingConfirmedUsersCount(item.Id),
+
+                        PhotoPath = item.PhotoPath,
+
+                        ShortDateString = item.MeetingDate.ToShortDateString()
+                    });
+            }
+
+            return View(modelList);
+        }
+
+
+        [HttpGet]
+        public async Task<IActionResult> MyMeetingInfo(int meetingId)
+        {
+            var userId = _userManager.GetUserId(User);
+            var ownership  = await _meetingQuery.CheckMeetingOwner(meetingId, userId);
+
+            if (ownership == false)
+            {
+                RedirectPermanent(Url.Action("Index", "Home"));
+            }
+
+            var meeting = await _meetingQuery.GetMeetingByIdAsync(meetingId);
+
+            var model =new MyMeetingInfoViewModel{
+
+                        Id = meeting.Id,
+
+                        Name = meeting.Name,
+
+                        Description = meeting.Description,
+
+                        CategoryName = (await _meetingQuery.GetMeetingCategoryByIdAsync(meeting.MeetingCategoryId)).Name,
+
+                        CityName = (await _locationQuery.GetCityByIdAsync(meeting.CitiesId)).Name,
+
+                        ConfirmedUsersRequests = await _meetingQuery.GetMeetingConfirmedUsersCount(meeting.Id),
+
+                        UnconfirmedUsersRequests = await _meetingQuery.GetMeetingUnconfirmedUsersCount(meeting.Id),
+
+                        PhotoPath = meeting.PhotoPath,
+
+                        ShortDateString = meeting.MeetingDate.ToShortDateString()
+                    };
+
+            return View(model);
+        }
+
+        [HttpGet]
+        [AllowAnonymous]
+        public async Task<IActionResult> GeneralMeetingInfo(int meetingId)
+        {
+            var meeting = await _meetingQuery.GetMeetingByIdAsync(meetingId);
+
+            var model = new GeneralMeetingInfoViewModel
+            {
+                Id = meeting.Id,
+
+                Name = meeting.Name,
+
+                Description = meeting.Description,
+
+                CategoryName = (await _meetingQuery.GetMeetingCategoryByIdAsync(meeting.MeetingCategoryId)).Name,
+
+                CityName = (await _locationQuery.GetCityByIdAsync(meeting.CitiesId)).Name,
+
+                ConfirmedUsersRequests = await _meetingQuery.GetMeetingConfirmedUsersCount(meeting.Id),
+
+                PhotoPath = meeting.PhotoPath,
+
+                ShortDateString = meeting.MeetingDate.ToShortDateString()
+            };
+
+            return View(model);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> CreateMeeting()
         {
             MeetingCreateViewModel model = new MeetingCreateViewModel();
 
@@ -45,20 +176,16 @@ namespace Community.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create(MeetingCreateViewModel model)
+        public async Task<IActionResult> CreateMeeting(MeetingCreateViewModel model)
         {
             if (!ModelState.IsValid)
             {
                 model.MeetingCategories = await _meetingQuery.GetMeetingCategoriesAsync();
                 return View(model);
             }
-
-            string photoPath = "";
-            if (model.PhotoPath != null)
-            {
-                var fileService = new FileService();
-                photoPath = await fileService.SaveImage(model.PhotoPath);
-            }
+            
+            var fileService = new FileService();
+            string photoPath = await fileService.SaveImage(model.PhotoPath);
 
             var userId = _userManager.GetUserId(User);
 
@@ -88,7 +215,7 @@ namespace Community.Controllers
         public async Task<IActionResult> EditMeeting(int meetingId)
         {
             var userId = _userManager.GetUserId(User);
-            var checkResult = await _meetingManager.CheckMeetingOwner(meetingId, userId);
+            var checkResult = await _meetingQuery.CheckMeetingOwner(meetingId, userId);
 
             if (checkResult==false)
             {
@@ -154,14 +281,16 @@ namespace Community.Controllers
         }
 
 
+        /*INFO ACTION!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!*/
+
         [HttpGet]
-        public async Task<IActionResult> Detail(int meetingId)
+        public async Task<IActionResult> DetailMeeting(int meetingId)
         {
             var meeting = await _meetingQuery.GetMeetingByIdAsync(meetingId);
             var city = await _locationQuery.GetCityByIdAsync(1);
             var category = await _meetingQuery.GetMeetingCategoryByIdAsync(meeting.MeetingCategoryId);
             var userId = _userManager.GetUserId(User);
-            var isUserJoined = await _meetingManager.IsUserJoinedMeeting(meetingId, userId);
+            var isUserJoined = await _meetingQuery.IsUserSubscribedMeeting(meetingId, userId);
 
             var model = new MeetingDetailViewModel
             {
@@ -178,38 +307,55 @@ namespace Community.Controllers
 
             return View(model);
         }
-        
 
-        public async Task<IActionResult> Join(int meetingId)
+
+        public async Task<IActionResult> SubscribeMeeting(int meetingId, string returnUrl)
         {
             var userId = _userManager.GetUserId(User);
-            var result = await _meetingManager.JoinMeetingAsync(meetingId, userId);
+            var result = await _meetingManager.SubscribeMeetingAsync(meetingId, userId);
 
             if (result == OperationResult.Failed)
             {
-                return Content("Joining failed");
+                return Content("o_O ... Something happens ...");
             }
-            return Content("Joined");
-            
+
+            return PartialView("~/Views/Meeting/_UserSubscriptionPartial.cshtml", meetingId);
         }
-        
-        public async Task<IActionResult> Unjoin(int meetingId)
+
+
+
+        public async Task<IActionResult> UnsubscribeMeeting(int meetingId)
         {
             var userId = _userManager.GetUserId(User);
-            var result = await _meetingManager.UnjoinMeetingAsync(meetingId, userId);
+            bool subscribed = await _meetingQuery.IsUserSubscribedMeeting(meetingId, userId);
+
+            if (!subscribed)
+            {
+                return Content("WTF");
+            }
+
+            var result = await _meetingManager.UnsubscribeMeetingAsync(meetingId, userId);
 
             if (result == OperationResult.Failed)
             {
-                return Content("Unjoining failed");
+                return Content("o_O ... Something happens ...");
             }
 
-            return Content("Unjoined");
+            return PartialView("~/Views/Meeting/_UserSubscriptionPartial.cshtml", meetingId);
         }
+
 
         /* !!!! OWNER CONFIRMATION REQUIRED ~!!!! */
         [HttpGet]
-        public async Task<IActionResult> Delete(int meetingId)
+        public async Task<IActionResult> DeleteMeeting(int meetingId)
         {
+            var userId = _userManager.GetUserId(User);
+
+            if (await _meetingQuery.CheckMeetingOwner(meetingId, userId) == false)
+            {
+                return Content("You are not meeting owner");
+            }
+
             var meeting = await _meetingQuery.GetMeetingByIdAsync(meetingId);
             var result = await _meetingManager.RemoveAsync(meeting);
 
@@ -218,7 +364,7 @@ namespace Community.Controllers
                 return Content("o_O ... Something happens ...");
             }
 
-            return View(nameof(HomeController.Index));
+            return RedirectPermanent(Url.Action("Index", "Home"));
         }
     }
 }

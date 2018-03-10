@@ -8,6 +8,12 @@ namespace Community.Data.Tables
 {
     public class User : IdentityUser
     {
+        [StringLength(maximumLength:20,MinimumLength =3)]
+        public string UserFirstName { get; set; }
+
+        [StringLength(maximumLength: 20, MinimumLength = 3)]
+        public string UserLastName { get; set; }
+
         [DataType(DataType.Date)]
         public DateTime RegistrationDate{ get; set; }
 

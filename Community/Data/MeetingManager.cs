@@ -17,27 +17,7 @@ namespace Community.Data
             _db = db;
         }
 
-        /// <summary>
-        /// Creates new Meeting object in database.
-        /// </summary>
-        /// <param name="meeting">Object to create in database.</param>
-        /// <returns></returns>
-        public async Task<bool> CheckMeetingOwner(int meetingId, string userId)
-        {
-            if (string.IsNullOrEmpty(userId))
-            {
-                return false;
-            }
 
-            var meeting = await _db.Meetings.FindAsync(meetingId);
-
-            if (meeting == null)
-            {
-                throw new Exception("meeting with such primary key is not fount (Valentin)");
-            }
-
-            return meeting.UserId == userId ? true : false ;
-        }
 
         public async Task<OperationResult> CreateAsync(Meeting meeting)
         {
@@ -93,30 +73,13 @@ namespace Community.Data
         }
 
 
-        public async Task<bool> IsUserJoinedMeeting(int meetingId, string userId)
+   
+
+        public async Task<OperationResult> SubscribeMeetingAsync(int meetingId, string userId)
         {
-            if (await _db.Users.FindAsync(userId) == null)
+            if (string.IsNullOrEmpty(userId))
             {
-                throw new Exception("user with such id does not exist");
-            }
-
-            if (await _db.Meetings.FindAsync(meetingId) == null)
-            {
-                throw new Exception("meeting with such id does not exist");
-            }
-
-            var count = await _db.UserMeetings
-                .Where(m => m.MeetingId == meetingId && m.UserId == userId)
-                .CountAsync();
-
-            return count != 0 ? true : false ;
-        }
-
-        public async Task<OperationResult> JoinMeetingAsync(int meetingId, string userId)
-        {
-            if (await IsUserJoinedMeeting(meetingId, userId) == true)
-            {
-                return OperationResult.Failed;
+                throw new ArgumentNullException("userId");
             }
 
             var entity = new UserMeetings
@@ -132,12 +95,12 @@ namespace Community.Data
             return OperationResult.Success;
         }
 
-        public async Task<OperationResult> UnjoinMeetingAsync(int meetingId, string userId)
+        public async Task<OperationResult> UnsubscribeMeetingAsync(int meetingId, string userId)
         {
-            if (await IsUserJoinedMeeting(meetingId, userId) == true)
+            if (string.IsNullOrEmpty(userId))
             {
-                return OperationResult.Failed;
-            } 
+                throw new ArgumentNullException("userId");
+            }
 
             var entity = new UserMeetings
             {
@@ -150,6 +113,8 @@ namespace Community.Data
 
             return OperationResult.Success;
         }
+
+
 
     }
 

@@ -1,0 +1,75 @@
+﻿@model GeneralMeetingInfoViewModel
+
+
+<div class="container-fluid">
+
+    <div class="row">
+        <div class="col-sm-offset-3 col-sm-6 ">
+            <img src="@Model.PhotoPath" class="img-responsive" style="height:200px" alt="event photo" />
+
+            <p>@Model.Name</p>
+
+            <p>Category : @Model.CategoryName</p>
+
+            <p>City : @Model.CityName</p>
+
+            <p>Date : @Model.ShortDateString</p>
+
+            <p>Users already joined : @Model.ConfirmedUsersRequests</p>
+
+            @{
+                await Html.RenderPartialAsync("_UserSubscriptionPartial.cshtml", Model.Id);
+            }
+
+            <p>@Model.Description</p>
+        </div>
+    </div>
+</div>
+<script>
+    /* !!! ATTENTION THIS SCRIPT IS NOT OPTIMIZED !!! */
+    $(document).ready(function () {
+
+
+        SubscribeElements();
+
+        function SubscribeElements() {
+
+            var subscribeBtn = $('.subscribeBtn');
+            var unsubscribeBtn = $('.unsubscribeBtn');
+            var subscriptionArea = $('.subscriptionArea');
+
+            $(subscribeBtn).on('click', function (event) {
+                event.preventDefault();
+                var meetingId = $(this).attr('data-meetingId');
+                let obj = $(this);
+
+                $.ajax(
+                    {
+                        url: 'SubscribeMeeting?meetingId=' + meetingId
+                    })
+                    .done(function (data) {
+                        obj.parent().html(data);
+                        SubscribeElements();
+                    });
+            });
+
+
+            $(unsubscribeBtn).on('click', function (event) {
+                event.preventDefault();
+                var meetingId = $(this).attr('data-meetingId');
+                let obj = $(this);
+
+                $.ajax(
+                    {
+                        url: 'UnsubscribeMeeting?meetingId=' + meetingId
+                    })
+                    .done(function (data) {
+                        obj.parent().html(data);
+                        SubscribeElements();
+                    });
+
+            });
+        }
+
+    });
+</script>

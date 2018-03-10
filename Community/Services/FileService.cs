@@ -14,7 +14,7 @@ namespace Community.Services
         {
             if (formFile == null)
             {
-                throw new ArgumentNullException("directoryPath or formFile is null");
+                return @"\Images\default.jpg";
             }
 
             var directoryForImage = @"wwwroot\Images\";

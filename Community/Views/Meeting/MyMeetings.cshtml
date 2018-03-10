@@ -1,0 +1,56 @@
+﻿@model IEnumerable<MyMeetingInfoViewModel>
+
+    <a asp-controller="Meeting" asp-action="CreateMeeting" class="btn btn-success">Create new event</a>
+
+<div class="container-fluid">
+
+    @foreach (var item in Model)
+    {
+
+        <div class="row">
+            <div class="col-sm-10 col-md-10">
+                <div class="thumbnail">
+                    <div class="row">
+                        <div class="col-sm-4">
+                            <img src="@item.PhotoPath" alt="..." width="150" height="100">
+                        </div>
+                        <div class="col-sm-8">
+                            <div class="caption">
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <p>@item.Name</p>
+                                        <p>Category : @item.CategoryName</p>
+                                        <p>Date : @item.ShortDateString</p>
+                                        <p>City : @item.CityName</p>
+                                    </div>
+                                    <div class="col-sm-6">
+
+                                        <p>Accepted users : @item.ConfirmedUsersRequests</p>
+
+                                        <button class="btn btn-primary" type="button">
+                                            Users want to join <span class="badge">@item.UnconfirmedUsersRequests</span>
+                                        </button>
+
+
+                                        <div class="dropdown">
+                                            <br />
+                                            <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                                                more actions
+                                                <span class="caret"></span>
+                                            </button>
+                                            <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+                                                <li><a asp-controller="Meeting" asp-action="MyMeetingInfo" asp-route-meetingId="@item.Id">Info</a></li>
+                                                <li><a asp-controller="Meeting" asp-action="EditMeeting" asp-route-meetingId="@item.Id">Edit</a></li>
+                                                <li><a asp-controller="Meeting" asp-action="DeleteMeeting" asp-route-meetingId="@item.Id">Delete</a></li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>

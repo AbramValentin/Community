@@ -49,7 +49,7 @@ namespace Community
                     options.Password.RequireUppercase = false;
                     options.Password.RequireNonAlphanumeric = false;
 
-                    options.User.AllowedUserNameCharacters += " ";
+                    //options.User.AllowedUserNameCharacters += " ";
                 }
             )
             .AddEntityFrameworkStores<CommunityDbContext>()
