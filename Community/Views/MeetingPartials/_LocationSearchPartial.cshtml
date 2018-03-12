@@ -1,0 +1,37 @@
+﻿@model IMeetingModifiable
+
+<div>
+    <label asp-for="CityId" class="control-label"></label>
+    <input id="City" type="search" value="" name="searchTerm" data-otf-autocomplete="@Url.Action("Autocomplete","Location")" />
+    <input asp-for="CityId" style="display:none" />
+    <span asp-validation-for="CityId" class="text-danger"></span>
+</div>
+
+<script>
+
+    $(function () {
+
+        var createAutocomplete = function () {
+            var $input = $(this);
+
+            var options = {
+                source: $input.attr("data-otf-autocomplete")
+            };
+
+            $("#City").autocomplete({
+                select: function (event, ui) {
+                    
+                    $('#CityId').val(ui.item.custom);
+                 }
+            });
+
+            $input.autocomplete(options);
+        }
+
+        $("input[data-otf-autocomplete]").each(createAutocomplete);
+
+    });
+
+</script>
+
+

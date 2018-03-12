@@ -9,8 +9,8 @@
                 <img src="~/Images/defaultUser.jpg" alt="gus" style="border-radius:50%;width:50px;margin:0;padding:0;" />
             </a>
             <ul class="dropdown-menu">
-                <li><a asp-action="MyMeetings" asp-controller="Meeting">My events</a></li>
-                <li><a asp-action="SubscribedMeetings" asp-controller="Meeting">Subscribed events</a></li>
+                <li><a asp-controller="MeetingInfo" asp-action="MeetingsOwn">My events</a></li>
+                <li><a asp-controller="MeetingInfo" asp-action="MeetingsSubscribed">Subscribed events</a></li>
                 <li role="separator" class="divider"></li>
                 <li><a asp-controller="Account" asp-action="LogOut">Logout</a></li>
             </ul>

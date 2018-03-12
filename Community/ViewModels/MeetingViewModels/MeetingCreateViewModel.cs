@@ -1,5 +1,6 @@
 ﻿using Community.Data;
 using Community.Data.Tables;
+using Community.ViewModels.MeetingViewModels;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 using System;
@@ -12,7 +13,7 @@ using System.Threading.Tasks;
 namespace Community.ModelViews.MeetingViewModels
 {
     [MeetingCreateValidator]
-    public class MeetingCreateViewModel
+    public class MeetingCreateViewModel : IMeetingModifiable
     {
         [Required]
         [StringLength(maximumLength: 25, MinimumLength = 5)]
@@ -64,7 +65,7 @@ namespace Community.ModelViews.MeetingViewModels
                 }
             }
 
-            /*ADD CITY VALIDATION , IF CITY DOES NOT EXITST : RETURN VALIDATION ERROR*/
+           
 
             return ValidationResult.Success;
         }

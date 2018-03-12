@@ -1,0 +1,27 @@
+﻿@model MeetingGeneralInfoViewModel
+
+
+<div class="container-fluid">
+
+    <div class="row">
+        <div class="col-sm-offset-3 col-sm-6 ">
+            <img src="@Model.PhotoPath" class="img-responsive" style="height:200px" alt="event photo" />
+
+            <p>@Model.Name</p>
+
+            <p>Category : @Model.CategoryName</p>
+
+            <p>City : @Model.CityName</p>
+
+            <p>Date : @Model.ShortDateString</p>
+
+            <p>Users already joined : @Model.ConfirmedUsersRequests</p>
+
+            @{
+                await Html.RenderPartialAsync("~/Views/MeetingPartials/_UserSubscriptionPartial.cshtml", Model.Id);
+            }
+
+            <p>@Model.Description</p>
+        </div>
+    </div>
+</div>

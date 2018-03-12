@@ -1,6 +1,6 @@
-﻿@model IEnumerable<MyMeetingInfoViewModel>
+﻿@model IEnumerable<MeetingOwnInfoViewModel>
 
-    <a asp-controller="Meeting" asp-action="CreateMeeting" class="btn btn-success">Create new event</a>
+    <a asp-controller="MeetingManage" asp-action="MeetingCreate" class="btn btn-success">Create new event</a>
 
 <div class="container-fluid">
 
@@ -25,11 +25,11 @@
                                     </div>
                                     <div class="col-sm-6">
 
-                                        <p>Accepted users : @item.ConfirmedUsersRequests</p>
+                                        <a asp-controller="MeetingInfo" asp-action="MeetingConfirmedSubscribers" asp-route-meetingId="@item.Id">Accepted users : @item.ConfirmedUsersRequests</a>
 
-                                        <button class="btn btn-primary" type="button">
+                                        <a asp-controller="MeetingInfo" asp-action="MeetingUnconfirmedSubscribers" asp-route-meetingId="@item.Id" class="btn btn-primary">
                                             Users want to join <span class="badge">@item.UnconfirmedUsersRequests</span>
-                                        </button>
+                                        </a>
 
 
                                         <div class="dropdown">
@@ -39,9 +39,9 @@
                                                 <span class="caret"></span>
                                             </button>
                                             <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
-                                                <li><a asp-controller="Meeting" asp-action="MyMeetingInfo" asp-route-meetingId="@item.Id">Info</a></li>
-                                                <li><a asp-controller="Meeting" asp-action="EditMeeting" asp-route-meetingId="@item.Id">Edit</a></li>
-                                                <li><a asp-controller="Meeting" asp-action="DeleteMeeting" asp-route-meetingId="@item.Id">Delete</a></li>
+                                                <li><a asp-controller="MeetingInfo" asp-action="MeetingOwnInfo" asp-route-meetingId="@item.Id">Info</a></li>
+                                                <li><a asp-controller="MeetingManage" asp-action="MeetingEdit" asp-route-meetingId="@item.Id">Edit</a></li>
+                                                <li><a asp-controller="MeetingManage" asp-action="MeetingDelete" asp-route-meetingId="@item.Id">Delete</a></li>
                                             </ul>
                                         </div>
                                     </div>

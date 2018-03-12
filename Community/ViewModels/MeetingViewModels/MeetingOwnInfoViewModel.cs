@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Community.ViewModels.MeetingViewModels
 {
-    public class MyMeetingInfoViewModel
+    public class MeetingOwnInfoViewModel
     {
         public int Id { get; set; }
         public string Name { get; set; }

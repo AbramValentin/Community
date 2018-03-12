@@ -1,4 +1,4 @@
-﻿@model MyMeetingInfoViewModel
+﻿@model MeetingOwnInfoViewModel
 
 
 <div class="container-fluid">
@@ -17,12 +17,12 @@
 
             <p>Users already joined : @Model.ConfirmedUsersRequests</p>
 
-            <button class="btn btn-primary" type="button">
+            <a asp-controller="MeetingInfo" asp-action="MeetingUnconfirmedSubscribers" asp-route-meetingId="@Model.Id" class="btn btn-primary">
                 Users want to join <span class="badge">@Model.UnconfirmedUsersRequests</span>
-            </button>
+            </a>
 
-            <a asp-controller="Meeting" asp-action="EditMeeting" asp-route-meetingId="@Model.Id" class="btn btn-primary">Edit</a>
-            <a asp-controller="Meeting" asp-action="DeleteMeeting" asp-route-meetingId="@Model.Id" class="btn btn-danger">Delete</a>
+            <a asp-controller="MeetingManage" asp-action="MeetingEdit" asp-route-meetingId="@Model.Id" class="btn btn-primary">Edit</a>
+            <a asp-controller="MeetingManage" asp-action="MeetingDelete" asp-route-meetingId="@Model.Id" class="btn btn-danger">Delete</a>
 
             <p>@Model.Description</p>
         </div>

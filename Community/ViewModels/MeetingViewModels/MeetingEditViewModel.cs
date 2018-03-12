@@ -1,4 +1,5 @@
 ﻿using Community.Data.Tables;
+using Community.ViewModels.MeetingViewModels;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -11,9 +12,8 @@ using System.Threading.Tasks;
 namespace Community.ModelViews.MeetingViewModels
 {
     [MeetingEditValidator]
-    public class MeetingEditViewModel
+    public class MeetingEditViewModel : IMeetingModifiable
     {
-        [HiddenInput]
         public int Id { get; set; }
 
         [Required]
@@ -31,7 +31,11 @@ namespace Community.ModelViews.MeetingViewModels
         [Display(Name = "Description")]
         public string Description { get; set; }
 
-        public string currentPhotoPath { get; set; }
+        [Required]
+        [Display(Name = "Choose a city")]
+        public int CityId { get; set; }
+
+        public string CurrentPhotoPath { get; set; }
 
         [Display(Name = "Photo")]
         public IFormFile PhotoSource { get; set; }
@@ -40,7 +44,7 @@ namespace Community.ModelViews.MeetingViewModels
         [Display(Name = "Category")]
         public int MeetingCategoryId { get; set; }
         public IEnumerable<MeetingCategory> MeetingCategories { get; set; }
-
+       
     }
 
     public class MeetingEditValidator : ValidationAttribute
@@ -64,7 +68,7 @@ namespace Community.ModelViews.MeetingViewModels
                 }
             }
 
-            /*ADD CITY VALIDATION , IF CITY DOES NOT EXITST : RETURN VALIDATION ERROR*/
+            
 
             return ValidationResult.Success;
         }

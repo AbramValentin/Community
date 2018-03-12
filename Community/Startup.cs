@@ -74,7 +74,7 @@ namespace Community
             {
                 routes.MapRoute(
                     name: "default",
-                    template: "{controller=Home}/{action=Index}/{id?}");
+                    template: "{controller=MeetingInfo}/{action=Index}");
             });
         }
     }

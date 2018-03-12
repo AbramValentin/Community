@@ -1,4 +1,4 @@
-﻿@model IEnumerable<GeneralMeetingInfoViewModel>
+﻿@model IEnumerable<MeetingGeneralInfoViewModel>
 @{
     ViewData["Title"] = "Index";
 }
@@ -20,7 +20,7 @@
                     <h5>Date : @item.ShortDateString</h5>
                     <h5>Members : @item.ConfirmedUsersRequests</h5>
                     <p>@item.Description ...</p>
-                    <p><a asp-controller="Meeting" asp-action="GeneralMeetingInfo" asp-route-meetingId="@item.Id" class="btn btn-primary">More details</a></p>
+                    <p><a asp-controller="MeetingInfo" asp-action="MeetingGeneralInfo" asp-route-meetingId="@item.Id" class="btn btn-primary">More details</a></p>
                 </div>
             </div>
         </div>

@@ -13,10 +13,9 @@ namespace Community.Data
         public DbSet<MeetingCategory> MeetingCategories { get; set; }
         public DbSet<UserMeetings> UserMeetings { get; set; }
 
-        //UA_CitiesDb (Already created)
-        public virtual DbSet<Area> Areas { get; set; }
-        public virtual DbSet<Region> Regions { get; set; }
-        public virtual DbSet<City> Cities { get; set; }
+        public  DbSet<Area> Areas { get; set; }
+        public  DbSet<Region> Regions { get; set; }
+        public  DbSet<City> Cities { get; set; }
 
 
         public CommunityDbContext(DbContextOptions<CommunityDbContext> options) 

@@ -24,7 +24,7 @@ namespace Community.Data
                 .Cities
                 .Where(m => m.Name.StartsWith(term, StringComparison.CurrentCultureIgnoreCase))
                 .Take(10)
-                .Select(m => new {value = m.Name, label = m.Name , custom = m.Id });
+                .Select(m => new {value = m.Name, label = m.Name ,custom = m.Id });
 
             return result;
         }

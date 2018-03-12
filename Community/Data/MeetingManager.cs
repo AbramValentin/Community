@@ -38,11 +38,13 @@ namespace Community.Data
         /// </summary>
         /// <param name="meeting">Object to remove from database.</param>
         /// <returns></returns>
-        public async Task<OperationResult> RemoveAsync(Meeting meeting)
+        public async Task<OperationResult> RemoveAsync(int meetingId)
         {
+            var meeting = await _db.Meetings.FindAsync(meetingId);
+
             if (meeting == null)
             {
-                throw new ArgumentNullException();
+                throw new ArgumentNullException("meetingId");
             }
 
             _db.Meetings.Remove(meeting);
@@ -59,12 +61,14 @@ namespace Community.Data
         /// <returns></returns>
         public async Task<OperationResult> EditAsync(Meeting meeting)
         {
-            var current = _db.Meetings.Find(meeting.Id);
+            var current = await _db.Meetings.FindAsync(meeting.Id);
 
             if (current==null)
             {
                 throw new ArgumentNullException();
             }
+
+            if (meeting.CitiesId == 0) { meeting.CitiesId = current.CitiesId; }
 
             _db.Entry(current).CurrentValues.SetValues(meeting);
             await _db.SaveChangesAsync();
@@ -102,11 +106,7 @@ namespace Community.Data
                 throw new ArgumentNullException("userId");
             }
 
-            var entity = new UserMeetings
-            {
-                MeetingId = meetingId,
-                UserId = userId,
-            };
+            var entity =  await _db.UserMeetings.FindAsync(userId, meetingId);
 
             _db.UserMeetings.Remove(entity);
             await _db.SaveChangesAsync();
@@ -114,7 +114,44 @@ namespace Community.Data
             return OperationResult.Success;
         }
 
+        public async Task<OperationResult> ApproveMeetingParticipant(int meetingId, string userId)
+        {
+            if (string.IsNullOrWhiteSpace(userId))
+            {
+                throw new ArgumentNullException("userId");
+            }
 
+            var meeting = await _db.UserMeetings.FindAsync(userId, meetingId);
+                
+
+            var entity = new UserMeetings
+            {
+                UserId = userId,
+                MeetingId = meetingId,
+                Approved = true
+            };
+
+            _db.Entry(meeting).CurrentValues.SetValues(entity);
+            await _db.SaveChangesAsync();
+
+            return OperationResult.Success;
+        }
+
+
+        public async Task<OperationResult> DeclineMeetingParcipant(int meetingId, string userId)
+        {
+            if (string.IsNullOrWhiteSpace(userId))
+            {
+                throw new ArgumentNullException("userId");
+            }
+
+            var meeting = await _db.UserMeetings.FindAsync(userId, meetingId);
+
+            _db.UserMeetings.Remove(meeting);
+            await _db.SaveChangesAsync();
+
+            return OperationResult.Success;
+        }
 
     }
 

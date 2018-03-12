@@ -1,0 +1,56 @@
+﻿@model IEnumerable<MeetingSubscriberViewModel>
+
+
+<div class="container-fluid">
+    @foreach (var item in Model)
+    {
+        <div class="meetingBox">
+            <div class="row">
+                <div class="col-sm-6">
+                    <img src="@item.UserPhotoPath" alt="user photo" class="img-rounded img-responsive" />
+                    <p>@item.UserFirstName @item.UserLastName</p>
+                </div>
+                <div class="col-sm-6">
+                    <img src="@item.MeetingPhotoPath" alt="meeting photo" class="img-rounded img-responsive" />
+                    <p>@item.MeetingName</p>
+                </div>
+            </div>
+            <div class="row">
+                <a asp-controller="MeetingManage" asp-action="MeetingDeclineUser"
+                   data-userId="@item.UserId" data-meetingId="@item.MeetingId"
+                   class="btn btn-success" id="userDeclineBtn">
+                    Decline
+                </a>
+            </div>
+        </div>
+    }
+</div>
+<script>
+    document.onreadystatechange = function () {
+        if (document.readyState == "complete") {
+
+            Main();
+        }
+    }
+
+    function Main() {
+
+        $('#userDeclineBtn').on('click', function (event) {
+            event.preventDefault();
+            var userId = $(this).attr('data-userId');
+            var meetingId = $(this).attr('data-meetingId');
+            let obj = $(this);
+            $.ajax(
+                {
+                    url: 'MeetingDeclineUser?userId=' + userId + '&&meetingId=' + meetingId,
+                    method: 'POST'
+                })
+                .done(function (data) {
+                    console.log('before delete' + obj);
+                    obj.parents('.meetingBox').remove();
+                });
+        });
+
+    }
+
+</script>

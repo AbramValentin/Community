@@ -1,0 +1,86 @@
+﻿@inject MeetingQuery _meetingQuery
+@inject UserManager<User> _userManager
+@model int
+
+@{
+    var userId = _userManager.GetUserId(User);
+}
+
+
+<div class="subscriptionArea">
+    @{
+        // If user not loged in
+        if (userId == null)
+        {
+            <a asp-controller="Account" asp-action="LogIn" class="btn btn-primary">Log in to subscribe</a>
+        }
+        // If user is not subscribed
+        else if (userId != null && !await _meetingQuery.IsUserSubscribedMeeting(Model, userId))
+        {
+            <a class="subscribeBtn btn btn-success" data-meetingId="@Model">Subscribe</a>
+        }
+        // If user is subscribed
+        else if (userId != null && await _meetingQuery.IsUserSubscribedMeeting(Model, userId))
+        {
+            <a class="unsubscribeBtn btn btn-danger" data-meetingId="@Model">Unsubscribe</a>
+        }
+    }
+</div>
+<script>
+
+    $(document).ready(function () {
+
+        SubscribeBtnsForEvent();
+
+        function SubscribeBtnsForEvent() {
+
+            var subscribeBtn = $('.subscribeBtn');
+            var unsubscribeBtn = $('.unsubscribeBtn');
+            var subscriptionArea = $('.subscriptionArea');
+
+            if (subscribeBtn) {
+                $(subscribeBtn).on('click', function (event) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                    var meetingId = $(this).attr('data-meetingId');
+                    let obj = $(this);
+
+                    $.ajax(
+                        {
+                            url: '/MeetingManage/MeetingSubscribe?meetingId=' + meetingId,
+                            type: 'POST'
+                        })
+                        .fail(function () {
+                            url: 'Error'
+                        })
+                        .done(function (data) {
+                            obj.parent().html(data);
+                        });
+                });
+            }
+
+            if (unsubscribeBtn) {
+                $(unsubscribeBtn).on('click', function (event) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                    var meetingId = $(this).attr('data-meetingId');
+                    let obj = $(this);
+
+                    $.ajax(
+                        {
+                            url: '/MeetingManage/MeetingUnsubscribe?meetingId=' + meetingId,
+                            type: 'POST'
+                        })
+                        .fail(function () {
+                            url: 'Error'
+                        })
+                        .done(function (data) {
+                            obj.parent().html(data);
+                        });
+
+                });
+            }
+        }
+
+    });
+</script>

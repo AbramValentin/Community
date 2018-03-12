@@ -1,4 +1,4 @@
-﻿@model IEnumerable<GeneralMeetingInfoViewModel>
+﻿@model IEnumerable<MeetingGeneralInfoViewModel>
 
 
 <div class="container-fluid">
@@ -32,10 +32,10 @@
                                                 <span class="caret"></span>
                                             </button>
                                             <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
-                                                <li><a asp-controller="Meeting" asp-action="GeneralMeetingInfo" asp-route-meetingId="@item.Id">Info</a></li>
+                                                <li><a asp-controller="MeetingInfo" asp-action="GeneralMeetingInfo" asp-route-meetingId="@item.Id">Info</a></li>
                                                 <li>
                                                     @{
-                                                        await Html.RenderPartialAsync("~/Views/Meeting/_UserSubscriptionPartial.cshtml",item.Id);
+                                                        await Html.RenderPartialAsync("~/Views/MeetingPartials/_UserSubscriptionPartial.cshtml", item.Id);
                                                     }
                                                 </li>
                                             </ul>
@@ -50,54 +50,3 @@
         </div>
     }
 </div>
-<script>
-    /* !!! ATTENTION THIS SCRIPT IS NOT OPTIMIZED !!! */
-    $(document).ready(function () {
-
-        
-        SubscribeElements();
-
-        function SubscribeElements() {
-
-            var subscribeBtn = $('.subscribeBtn');
-            var unsubscribeBtn = $('.unsubscribeBtn');
-            var subscriptionArea = $('.subscriptionArea');
-
-            $(subscribeBtn).on('click', function (event) {
-                event.preventDefault();
-                var meetingId = $(this).attr('data-meetingId');
-                let obj = $(this);
-
-                $.ajax(
-                    {
-                        url: 'SubscribeMeeting?meetingId=' + meetingId
-                    })
-                    .done(function (data) {
-                        obj.parent().html(data);
-                        SubscribeElements();
-                    });
-            });
-
-
-            $(unsubscribeBtn).on('click', function (event) {
-                event.preventDefault();
-                var meetingId = $(this).attr('data-meetingId');
-                let obj = $(this);
-
-                $.ajax(
-                    {
-                        url: 'UnsubscribeMeeting?meetingId=' + meetingId
-                    })
-                    .done(function (data) {
-                        obj.parent().html(data);
-                        SubscribeElements();
-                    });
-
-            });
-         }
-
-            
-            
-        
-    });
-</script>

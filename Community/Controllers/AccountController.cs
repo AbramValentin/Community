@@ -96,7 +96,7 @@ namespace Community
                 var result = await _signInManager.PasswordSignInAsync(user.UserName, model.Password, model.RememberMe, lockoutOnFailure: false);
                 if (result.Succeeded)
                 {
-                    return RedirectPermanent(Url.Action("Index", "Home"));
+                    return RedirectPermanent(Url.Action("Index", "MeetingInfo"));
                 }
                 else
                 {
@@ -115,7 +115,7 @@ namespace Community
         public async Task<IActionResult> LogOut()
         {
             await _signInManager.SignOutAsync();
-            return RedirectToAction(nameof(HomeController.Index), "Home");
+            return RedirectToAction(nameof(MeetingInfoController.Index), "MeetingInfo");
         }
 
 
@@ -205,7 +205,7 @@ namespace Community
         {
             if (userId == null || token == null)
             {
-                return RedirectToAction(nameof(HomeController.Index), "Home");
+                return RedirectToAction(nameof(MeetingInfoController.Index), "MeetingInfo");
             }
             var user = await _userManager.FindByIdAsync(userId);
             if (user == null)
@@ -235,7 +235,7 @@ namespace Community
             }
             else
             {
-                return RedirectToAction(nameof(HomeController.Index), "Home");
+                return RedirectToAction(nameof(MeetingInfoController.Index), "MeetingInfo");
             }
         }
 
