@@ -28,59 +28,70 @@
 </div>
 <script>
 
-    $(document).ready(function () {
+    document.onreadystatechange = function () {
+        if (document.readyState == "complete") {
 
-        SubscribeBtnsForEvent();
-
-        function SubscribeBtnsForEvent() {
-
-            var subscribeBtn = $('.subscribeBtn');
-            var unsubscribeBtn = $('.unsubscribeBtn');
-            var subscriptionArea = $('.subscriptionArea');
-
-            if (subscribeBtn) {
-                $(subscribeBtn).on('click', function (event) {
-                    event.preventDefault();
-                    event.stopPropagation();
-                    var meetingId = $(this).attr('data-meetingId');
-                    let obj = $(this);
-
-                    $.ajax(
-                        {
-                            url: '/MeetingManage/MeetingSubscribe?meetingId=' + meetingId,
-                            type: 'POST'
-                        })
-                        .fail(function () {
-                            url: 'Error'
-                        })
-                        .done(function (data) {
-                            obj.parent().html(data);
-                        });
-                });
-            }
-
-            if (unsubscribeBtn) {
-                $(unsubscribeBtn).on('click', function (event) {
-                    event.preventDefault();
-                    event.stopPropagation();
-                    var meetingId = $(this).attr('data-meetingId');
-                    let obj = $(this);
-
-                    $.ajax(
-                        {
-                            url: '/MeetingManage/MeetingUnsubscribe?meetingId=' + meetingId,
-                            type: 'POST'
-                        })
-                        .fail(function () {
-                            url: 'Error'
-                        })
-                        .done(function (data) {
-                            obj.parent().html(data);
-                        });
-
-                });
-            }
+            Main();
         }
+    }
 
-    });
+    function Main() {
+        $(document).ready(function () {
+
+            SubscribeBtnsForEvent();
+
+            function SubscribeBtnsForEvent() {
+
+                var subscribeBtn = $('.subscribeBtn');
+                var unsubscribeBtn = $('.unsubscribeBtn');
+                var subscriptionArea = $('.subscriptionArea');
+
+                if (subscribeBtn) {
+                    $(subscribeBtn).on('click', function (event) {
+                        event.preventDefault();
+                        event.stopPropagation();
+                        var meetingId = $(this).attr('data-meetingId');
+                        let obj = $(this);
+
+                        $.ajax(
+                            {
+                                url: '/MeetingManage/MeetingSubscribe?meetingId=' + meetingId,
+                                type: 'POST'
+                            })
+                            .fail(function () {
+                                url: 'Error'
+                            })
+                            .done(function (data) {
+                                obj.parent().html(data);
+                                SubscribeBtnsForEvent();
+                            });
+                    });
+                }
+
+                if (unsubscribeBtn) {
+                    $(unsubscribeBtn).on('click', function (event) {
+                        event.preventDefault();
+                        event.stopPropagation();
+                        var meetingId = $(this).attr('data-meetingId');
+                        let obj = $(this);
+
+                        $.ajax(
+                            {
+                                url: '/MeetingManage/MeetingUnsubscribe?meetingId=' + meetingId,
+                                type: 'POST'
+                            })
+                            .fail(function () {
+                                url: 'Error'
+                            })
+                            .done(function (data) {
+                                obj.parent().html(data);
+                                SubscribeBtnsForEvent();
+                            });
+
+                    });
+                }
+            }
+
+        });
+    }
 </script>

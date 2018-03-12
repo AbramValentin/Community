@@ -9,29 +9,37 @@
 
 <script>
 
-    $(function () {
+    document.onreadystatechange = function () {
+        if (document.readyState == "complete") {
 
-        var createAutocomplete = function () {
-            var $input = $(this);
-
-            var options = {
-                source: $input.attr("data-otf-autocomplete")
-            };
-
-            $("#City").autocomplete({
-                select: function (event, ui) {
-                    
-                    $('#CityId').val(ui.item.custom);
-                 }
-            });
-
-            $input.autocomplete(options);
+            Main();
         }
+    }
 
-        $("input[data-otf-autocomplete]").each(createAutocomplete);
+    function Main() {
 
-    });
+        $(function () {
+
+            var createAutocomplete = function () {
+                var $input = $(this);
+
+                var options = {
+                    source: $input.attr("data-otf-autocomplete")
+                };
+
+                $("#City").autocomplete({
+                    select: function (event, ui) {
+
+                        $('#CityId').val(ui.item.custom);
+                    }
+                });
+
+                $input.autocomplete(options);
+            }
+
+            $("input[data-otf-autocomplete]").each(createAutocomplete);
+
+        });
+    }
 
 </script>
-
-
