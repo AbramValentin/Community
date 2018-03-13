@@ -29,7 +29,8 @@ namespace Community
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddTransient<IEmailService, EmailServise>();
+            services.AddSingleton<IEmailService, EmailServise>();
+            services.AddSingleton<FileService>();
 
             services.AddTransient<MeetingManager>();
             services.AddTransient<MeetingQuery>();

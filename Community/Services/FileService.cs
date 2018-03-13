@@ -1,4 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Configuration;
+using Microsoft.IdentityModel.Protocols;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -9,15 +11,30 @@ namespace Community.Services
 {
     public class FileService
     {
-        
+        private readonly IConfiguration _configuration;
+
+        public FileService()
+        {
+            var builder = new ConfigurationBuilder()
+            .SetBasePath(Directory.GetCurrentDirectory())
+            .AddJsonFile("appsettings.json");
+
+            _configuration = builder.Build();
+        }
+        /// <summary>
+        /// Saves image in directory and returns file path,
+        /// which can be used to access this image letter.
+        /// </summary>
+        /// <param name="formFile"></param>
+        /// <returns></returns>
         public async Task<string> SaveImage(IFormFile formFile)
         {
             if (formFile == null)
             {
-                return @"\Images\default.jpg";
+                return _configuration["FileService:DefaultImagePath"];
             }
             
-            var directoryForImage = @"wwwroot\Images\";
+            var directoryForImage = _configuration["FileService:DirectoryForImages"];
             
             // Creates random name for image
             var fileName = GetRandomFileName(directoryForImage);
@@ -36,11 +53,8 @@ namespace Community.Services
                 await formFile.CopyToAsync(fileStream);
             }
 
-            // Removes not needed part of full path.
-            // It's correct path for database field 
-            filePath = filePath.Replace("wwwroot", "");
-
-            return filePath;
+           
+            return _configuration["FileService:ImageAccessPath"]+fileName;
         }
 
 

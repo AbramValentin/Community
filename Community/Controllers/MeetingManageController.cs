@@ -19,18 +19,21 @@ namespace Community.Controllers
         private readonly UserManager<User> _userManager;
         private readonly MeetingQuery _meetingQuery;
         private readonly LocationQuery _locationQuery;
+        private readonly FileService _fileService;
 
         public MeetingManageController(
             UserManager<User> userManager,
             MeetingManager meetingManager,
             MeetingQuery meetingQuery,
-            LocationQuery locationQuery
+            LocationQuery locationQuery,
+            FileService fileService
             )
         {
             _userManager = userManager;
             _meetingManager = meetingManager;
             _meetingQuery = meetingQuery;
             _locationQuery = locationQuery;
+            _fileService = fileService;
         }
 
 
@@ -52,9 +55,16 @@ namespace Community.Controllers
                 model.MeetingCategories = await _meetingQuery.GetMeetingCategoriesAsync();
                 return View(model);
             }
+
+            if (await _locationQuery.GetCityByIdAsync(model.CityId) == null)
+            {
+                ModelState.AddModelError("CityId", "Please choose a city");
+                model.MeetingCategories = await _meetingQuery.GetMeetingCategoriesAsync();
+                return View(model);
+            }
             
-            var fileService = new FileService();
-            string photoPath = await fileService.SaveImage(model.PhotoPath);
+            
+            string photoPath = await _fileService.SaveImage(model.PhotoPath);
 
             var userId = _userManager.GetUserId(User);
 
@@ -122,8 +132,7 @@ namespace Community.Controllers
             string photoPath = null;
             if (model.PhotoSource != null)
             {
-                var fileService = new FileService();
-                photoPath = await fileService
+                photoPath = await _fileService
                     .UpdateImageAsync(model.CurrentPhotoPath, model.PhotoSource);
             }
 

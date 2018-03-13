@@ -49,14 +49,6 @@ namespace Community.Data
             return city;
         }
 
-        public  City GetCityByName(string cityName)
-        {
-            var city =  _db.Cities
-                .Where(m => m.Name == cityName)
-                .Single();
-
-            return city;
-        }
 
         public async Task<Region> GetRegionById(int regionId)
         {

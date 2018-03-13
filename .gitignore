@@ -261,6 +261,6 @@ __pycache__/
 *.pyc
 
 #Other data
-~
-~/Community/wwwroot/lib
-~/Community/wwwroot/images
+lib/
+images/
+appsetting.json
