@@ -63,7 +63,6 @@ namespace Community
                     return Content("Please check your mail box to finish registration");
                 }
 
-                AddErrors(result);       
             }
              return View(model);
         }
@@ -83,17 +82,7 @@ namespace Community
           
             if (ModelState.IsValid)
             {
-                // This doesn't count login failures towards account lockout
-                // To enable password failures to trigger account lockout, set lockoutOnFailure: true
-                
-                var user = await _userManager.FindByEmailAsync(model.Email);
-
-                if (user == null)
-                {
-                    return View();
-                }
-
-                var result = await _signInManager.PasswordSignInAsync(user.UserName, model.Password, model.RememberMe, lockoutOnFailure: false);
+                var result = await _signInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, lockoutOnFailure: true);
                 if (result.Succeeded)
                 {
                     return RedirectPermanent(Url.Action("Index", "MeetingInfo"));
@@ -111,7 +100,7 @@ namespace Community
 
 
 
-        //[HttpPost]
+        [HttpPost]
         public async Task<IActionResult> LogOut()
         {
             await _signInManager.SignOutAsync();
@@ -188,7 +177,6 @@ namespace Community
             {
                 return RedirectToAction(nameof(ResetPasswordConfirmation));
             }
-            AddErrors(result);
             return View();
         }
 
@@ -216,28 +204,6 @@ namespace Community
             return Content(result.Succeeded ? "Email confirmed" : "Error");
         }
 
-
-
-        // helpers 
-        private void AddErrors(IdentityResult result)
-        {
-            foreach (var error in result.Errors)
-            {
-                ModelState.AddModelError(string.Empty, error.Description);
-            }
-        }
-
-        private IActionResult RedirectToLocal(string returnUrl)
-        {
-            if (Url.IsLocalUrl(returnUrl))
-            {
-                return Redirect(returnUrl);
-            }
-            else
-            {
-                return RedirectToAction(nameof(MeetingInfoController.Index), "MeetingInfo");
-            }
-        }
 
     }
 }
