@@ -24,7 +24,7 @@ namespace Community.Data
         /// <param name="userId">Id of user to check.</param>
         /// <returns></returns>
         /// 
-        public async Task<bool> CheckMeetingOwner(int meetingId, string userId)
+        public async Task<bool> CheckMeetingOwnerAsync(int meetingId, string userId)
         {
             if (string.IsNullOrEmpty(userId))
             {
@@ -41,7 +41,15 @@ namespace Community.Data
             return meeting.UserId == userId ? true : false;
         }
 
-        public async Task<bool> IsUserSubscribedMeeting(int meetingId, string userId)
+
+        /// <summary>
+        /// Checks if user already subscribed for meeting.
+        /// Returns true if subscribed and false if not.
+        /// </summary>
+        /// <param name="meetingId">Id of meeting to check.</param>
+        /// <param name="userId">Id of user to check</param>
+        /// <returns></returns>
+        public async Task<bool> IsUserSubscribedMeetingAsync(int meetingId, string userId)
         {
             if (string.IsNullOrWhiteSpace(userId))
             {
@@ -65,7 +73,14 @@ namespace Community.Data
             return count != 0 ? true : false;
         }
 
-        public async Task<int> GetMeetingConfirmedUsersCount(int meetingId)
+
+        /// <summary>
+        /// Returns amount of users that is subscribed and confirmed
+        /// by meeting creator as participants for particular meeting.
+        /// </summary>
+        /// <param name="meetingId">Id of meeting to check.</param>
+        /// <returns></returns>
+        public async Task<int> GetMeetingConfirmedUsersCountAsync(int meetingId)
         {
             var count = await _db.UserMeetings
                 .Where(m => m.MeetingId == meetingId && m.Approved == true)
@@ -74,7 +89,14 @@ namespace Community.Data
             return count;
         }
 
-        public async Task<int> GetMeetingUnconfirmedUsersCount(int meetingId)
+
+        /// <summary>
+        /// Returns amount of users that is subscribed but not confirmed
+        /// by meeting creator as participants for particular meeting.
+        /// </summary>
+        /// <param name="meetingId">Id of meeting to check.</param>
+        /// <returns></returns>
+        public async Task<int> GetMeetingUnconfirmedUsersCountAsync(int meetingId)
         {
             var count = await _db.UserMeetings
                 .Where(m => m.MeetingId == meetingId && m.Approved == false)
@@ -83,7 +105,14 @@ namespace Community.Data
             return count;
         }
 
-        public async Task<IEnumerable<User>> GetMeetingUnconfirmedUsers(int meetingId)
+
+        /// <summary>
+        /// Returns users that is subscribed and confirmed
+        /// by meeting creator as participants for particular meeting.
+        /// </summary>
+        /// <param name="meetingId">Id of meeting to check.</param>
+        /// <returns></returns>
+        public async Task<IEnumerable<User>> GetMeetingUnconfirmedUsersAsync(int meetingId)
         {
             var users = from u in _db.Users
                         join um in _db.UserMeetings
@@ -99,7 +128,14 @@ namespace Community.Data
             return await users.ToListAsync();
         }
 
-        public async Task<IEnumerable<User>> GetMeetingConfirmedUsers(int meetingId)
+
+        /// <summary>
+        /// Returns users that is subscribed but not confirmed
+        /// by meeting creator as participants for particular meeting.
+        /// </summary>
+        /// <param name="meetingId">Id of meeting to check.</param>
+        /// <returns></returns>
+        public async Task<IEnumerable<User>> GetMeetingConfirmedUsersAsync(int meetingId)
         {
             var users = from u in _db.Users
                         join um in _db.UserMeetings
@@ -116,14 +152,12 @@ namespace Community.Data
         }
 
 
-
-
         /// <summary>
         /// Returns meetings created by user.
         /// </summary>
         /// <param name="idUser">Id of user.</param>
         /// <returns></returns>
-        public async Task<IEnumerable<Meeting>> GetUserCreatedMeetings(string idUser)
+        public async Task<IEnumerable<Meeting>> GetUserCreatedMeetingsAsync(string idUser)
         {
             var meetingList = await _db.Meetings
                 .Where(m => m.UserId == idUser)
@@ -138,7 +172,7 @@ namespace Community.Data
         /// </summary>
         /// <param name="idUser">Id of user.</param>
         /// <returns></returns>
-        public async Task<IEnumerable<Meeting>> GetUserSubscribedMeetings(string userId)
+        public async Task<IEnumerable<Meeting>> GetUserSubscribedMeetingsAsync(string userId)
         {
             var result = from m in _db.Meetings
                          join um in _db.UserMeetings
@@ -165,7 +199,7 @@ namespace Community.Data
 
 
         /// <summary>
-        /// Returns particular amount of latest registered  meetings in database.
+        /// Returns last registered  meetings in database.
         /// </summary>
         /// <param name="amount">Amount of meetings to get.</param>
         /// <returns></returns>
@@ -179,60 +213,23 @@ namespace Community.Data
             return meetingList;
         }
 
-        /// <summary>
-        /// Returns meetings filtered by given city id.
-        /// </summary>
-        /// <param name="cityId">Id of city to filter by.</param>
-        /// <returns></returns>
-        public IEnumerable<Meeting> GetMeetingsByCityId(int cityId)
-        {
-            throw new NotImplementedException();
-        }
-
 
         /// <summary>
-        /// Returns meetings filtered by given city id.
+        /// Returns all available meeting categories.
         /// </summary>
-        /// <param name="cityId">Id of city to filter by.</param>
-        /// <param name="skip">Amount of first selected items to skip.</param>
-        /// <param name="take">Amount of items to return.</param>
         /// <returns></returns>
-        public IEnumerable<Meeting> GetMeetingsByCityId(int cityId, int skip, int take)
-        {
-            throw new NotImplementedException();
-        }
-
-
-        /// <summary>
-        /// Returns meetings filtered by given category id.
-        /// </summary>
-        /// <param name="categoryId">Id of category to filter by.</param>
-        /// <returns></returns>
-        public IEnumerable<Meeting> GetMeetingsByCategoryId(int categoryId)
-        {
-            throw new NotImplementedException();
-        }
-
-
-        /// <summary>
-        /// Returns meetings filtered by given category id.
-        /// </summary>
-        /// <param name="categoryId">Id of category to filter by.</param>
-        /// <param name="skip">Amount of first selected items to skip.</param>
-        /// <param name="take">Amount of items to return.</param>
-        /// <returns></returns>
-        public IEnumerable<Meeting> GetMeetingsByCategoryId(int categoryId, int skip, int take)
-        {
-            throw new NotImplementedException();
-        }
-
-
         public async Task<IEnumerable<MeetingCategory>> GetMeetingCategoriesAsync()
         {
             var list = await _db.MeetingCategories.ToListAsync();
             return list;
         }
 
+
+        /// <summary>
+        /// Returns meeting category by given primary key value.
+        /// </summary>
+        /// <param name="meetingId">Primary key of meeting category.</param>
+        /// <returns></returns>
         public async Task<MeetingCategory> GetMeetingCategoryByIdAsync(int meetingId)
         {
             var category = await _db

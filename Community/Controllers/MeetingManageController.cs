@@ -79,7 +79,7 @@ namespace Community.Controllers
                 UserId = userId,
             };
 
-            var result = await _meetingManager.CreateAsync(meeting);
+            var result = await _meetingManager.CreateMeetingAsync(meeting);
 
             if (result == OperationResult.Failed)
             {
@@ -94,7 +94,7 @@ namespace Community.Controllers
         public async Task<IActionResult> MeetingEdit(int meetingId)
         {
             var userId = _userManager.GetUserId(User);
-            var checkOwnership = await _meetingQuery.CheckMeetingOwner(meetingId, userId);
+            var checkOwnership = await _meetingQuery.CheckMeetingOwnerAsync(meetingId, userId);
 
             if (checkOwnership == false)
             {
@@ -150,7 +150,7 @@ namespace Community.Controllers
                 CitiesId = model.CityId
             };
 
-            var result = await _meetingManager.EditAsync(meeting);
+            var result = await _meetingManager.EditMeetingAsync(meeting);
 
             if (result == OperationResult.Failed)
             {
@@ -165,12 +165,12 @@ namespace Community.Controllers
         {
             var userId = _userManager.GetUserId(User);
 
-            if (await _meetingQuery.CheckMeetingOwner(meetingId, userId) == false)
+            if (await _meetingQuery.CheckMeetingOwnerAsync(meetingId, userId) == false)
             {
                 return Content("You are not meeting owner");
             }
             
-            var result = await _meetingManager.RemoveAsync(meetingId);
+            var result = await _meetingManager.RemoveMeetingAsync(meetingId);
 
             if (result == OperationResult.Failed)
             {
@@ -205,7 +205,7 @@ namespace Community.Controllers
         public async Task<IActionResult> MeetingUnsubscribe(int meetingId)
         {
             var userId = _userManager.GetUserId(User);
-            bool subscribed = await _meetingQuery.IsUserSubscribedMeeting(meetingId, userId);
+            bool subscribed = await _meetingQuery.IsUserSubscribedMeetingAsync(meetingId, userId);
 
             if (!subscribed)
             {

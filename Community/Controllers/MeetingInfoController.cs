@@ -53,7 +53,7 @@ namespace Community
 
                         CategoryName = (await _meetingQuery.GetMeetingCategoryByIdAsync(item.MeetingCategoryId)).Name,
 
-                        ConfirmedUsersRequests = await _meetingQuery.GetMeetingConfirmedUsersCount(item.Id),
+                        ConfirmedUsersRequests = await _meetingQuery.GetMeetingConfirmedUsersCountAsync(item.Id),
 
                         PhotoPath = item.PhotoPath,
 
@@ -68,7 +68,7 @@ namespace Community
         public async Task<IActionResult> MeetingsOwn()
         {
             var userId = _userManager.GetUserId(User);
-            var userMeetings = await _meetingQuery.GetUserCreatedMeetings(userId);
+            var userMeetings = await _meetingQuery.GetUserCreatedMeetingsAsync(userId);
 
 
             List<MeetingOwnInfoViewModel> modelList = new List<MeetingOwnInfoViewModel>();
@@ -86,9 +86,9 @@ namespace Community
 
                         CityName = (await _locationQuery.GetCityByIdAsync(item.CitiesId)).Name,
 
-                        ConfirmedUsersRequests = await _meetingQuery.GetMeetingConfirmedUsersCount(item.Id),
+                        ConfirmedUsersRequests = await _meetingQuery.GetMeetingConfirmedUsersCountAsync(item.Id),
 
-                        UnconfirmedUsersRequests = await _meetingQuery.GetMeetingUnconfirmedUsersCount(item.Id),
+                        UnconfirmedUsersRequests = await _meetingQuery.GetMeetingUnconfirmedUsersCountAsync(item.Id),
 
                         PhotoPath = item.PhotoPath,
 
@@ -103,7 +103,7 @@ namespace Community
         public async Task<IActionResult> MeetingsSubscribed()
         {
             var userId = _userManager.GetUserId(User);
-            var userMeetings = await _meetingQuery.GetUserSubscribedMeetings(userId);
+            var userMeetings = await _meetingQuery.GetUserSubscribedMeetingsAsync(userId);
 
             List<MeetingGeneralInfoViewModel> modelList = new List<MeetingGeneralInfoViewModel>();
 
@@ -120,7 +120,7 @@ namespace Community
 
                         CategoryName = (await _meetingQuery.GetMeetingCategoryByIdAsync(item.MeetingCategoryId)).Name,
 
-                        ConfirmedUsersRequests = await _meetingQuery.GetMeetingConfirmedUsersCount(item.Id),
+                        ConfirmedUsersRequests = await _meetingQuery.GetMeetingConfirmedUsersCountAsync(item.Id),
 
                         PhotoPath = item.PhotoPath,
 
@@ -148,7 +148,7 @@ namespace Community
 
                 CityName = (await _locationQuery.GetCityByIdAsync(meeting.CitiesId)).Name,
 
-                ConfirmedUsersRequests = await _meetingQuery.GetMeetingConfirmedUsersCount(meeting.Id),
+                ConfirmedUsersRequests = await _meetingQuery.GetMeetingConfirmedUsersCountAsync(meeting.Id),
 
                 PhotoPath = meeting.PhotoPath,
 
@@ -162,7 +162,7 @@ namespace Community
         public async Task<IActionResult> MeetingOwnInfo(int meetingId)
         {
             var userId = _userManager.GetUserId(User);
-            var ownership = await _meetingQuery.CheckMeetingOwner(meetingId, userId);
+            var ownership = await _meetingQuery.CheckMeetingOwnerAsync(meetingId, userId);
 
             if (ownership == false)
             {
@@ -184,9 +184,9 @@ namespace Community
 
                 CityName = (await _locationQuery.GetCityByIdAsync(meeting.CitiesId)).Name,
 
-                ConfirmedUsersRequests = await _meetingQuery.GetMeetingConfirmedUsersCount(meeting.Id),
+                ConfirmedUsersRequests = await _meetingQuery.GetMeetingConfirmedUsersCountAsync(meeting.Id),
 
-                UnconfirmedUsersRequests = await _meetingQuery.GetMeetingUnconfirmedUsersCount(meeting.Id),
+                UnconfirmedUsersRequests = await _meetingQuery.GetMeetingUnconfirmedUsersCountAsync(meeting.Id),
 
                 PhotoPath = meeting.PhotoPath,
 
@@ -201,14 +201,14 @@ namespace Community
         {
             var userId = _userManager.GetUserId(User);
 
-            var checkResult = await _meetingQuery.CheckMeetingOwner(meetingId, userId);
+            var checkResult = await _meetingQuery.CheckMeetingOwnerAsync(meetingId, userId);
 
             if (checkResult == false)
             {
                 return RedirectPermanent(Url.Action("Index", "Home"));
             }
 
-            var unconfirmedSubscribers = await _meetingQuery.GetMeetingUnconfirmedUsers(meetingId);
+            var unconfirmedSubscribers = await _meetingQuery.GetMeetingUnconfirmedUsersAsync(meetingId);
 
             var subscribersList = new List<MeetingSubscriberViewModel>();
 
@@ -239,14 +239,14 @@ namespace Community
         {
             var userId = _userManager.GetUserId(User);
 
-            var checkResult = await _meetingQuery.CheckMeetingOwner(meetingId, userId);
+            var checkResult = await _meetingQuery.CheckMeetingOwnerAsync(meetingId, userId);
 
             if (checkResult == false)
             {
                 return RedirectPermanent(Url.Action("Index", "Home"));
             }
 
-            var unconfirmedSubscribers = await _meetingQuery.GetMeetingConfirmedUsers(meetingId);
+            var unconfirmedSubscribers = await _meetingQuery.GetMeetingConfirmedUsersAsync(meetingId);
 
             var subscribersList = new List<MeetingSubscriberViewModel>();
 

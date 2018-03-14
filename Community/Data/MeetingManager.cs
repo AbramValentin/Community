@@ -18,8 +18,12 @@ namespace Community.Data
         }
 
 
-
-        public async Task<OperationResult> CreateAsync(Meeting meeting)
+        /// <summary>
+        /// Creates meeting in database.
+        /// </summary>
+        /// <param name="meeting">Meeting object to create.</param>
+        /// <returns></returns>
+        public async Task<OperationResult> CreateMeetingAsync(Meeting meeting)
         {
             if (meeting == null)
             {
@@ -34,11 +38,11 @@ namespace Community.Data
 
 
         /// <summary>
-        /// Removes given object from database.
+        /// Removes meeting that has given primary key value from database.
         /// </summary>
-        /// <param name="meeting">Object to remove from database.</param>
+        /// <param name="meeting">Primary key of meeting to remove from database.</param>
         /// <returns></returns>
-        public async Task<OperationResult> RemoveAsync(int meetingId)
+        public async Task<OperationResult> RemoveMeetingAsync(int meetingId)
         {
             var meeting = await _db.Meetings.FindAsync(meetingId);
 
@@ -55,11 +59,11 @@ namespace Community.Data
 
 
         /// <summary>
-        /// Updates data in 
+        /// Edit meeting in database.
         /// </summary>
-        /// <param name="meeting"></param>
+        /// <param name="meeting">Meeting object with changed values.</param>
         /// <returns></returns>
-        public async Task<OperationResult> EditAsync(Meeting meeting)
+        public async Task<OperationResult> EditMeetingAsync(Meeting meeting)
         {
             var current = await _db.Meetings.FindAsync(meeting.Id);
 
@@ -78,7 +82,12 @@ namespace Community.Data
 
 
    
-
+        /// <summary>
+        /// Subscribes user for meeting, with approved status equals to false.
+        /// </summary>
+        /// <param name="meetingId">Primary key of meeting to subscribe.</param>
+        /// <param name="userId">Primary key of user to subscribe for meeting.</param>
+        /// <returns></returns>
         public async Task<OperationResult> SubscribeMeetingAsync(int meetingId, string userId)
         {
             if (string.IsNullOrEmpty(userId))
@@ -99,6 +108,13 @@ namespace Community.Data
             return OperationResult.Success;
         }
 
+
+        /// <summary>
+        /// Cancel user subscription for meeting.
+        /// </summary>
+        /// <param name="meetingId">Primary key of meeting to cancel subscription.</param>
+        /// <param name="userId">Primary key of user that will be unsubscribed.</param>
+        /// <returns></returns>
         public async Task<OperationResult> UnsubscribeMeetingAsync(int meetingId, string userId)
         {
             if (string.IsNullOrEmpty(userId))
@@ -114,6 +130,13 @@ namespace Community.Data
             return OperationResult.Success;
         }
 
+
+        /// <summary>
+        /// Approves user subscription for meeting by setting approved status to true.
+        /// </summary>
+        /// <param name="meetingId">Primary key of meeting to approve user subscription.</param>
+        /// <param name="userId">Primary key of user to approve subscription.</param>
+        /// <returns></returns>
         public async Task<OperationResult> ApproveMeetingParticipant(int meetingId, string userId)
         {
             if (string.IsNullOrWhiteSpace(userId))
@@ -137,7 +160,12 @@ namespace Community.Data
             return OperationResult.Success;
         }
 
-
+        /// <summary>
+        /// Declines user subscription for meeting by deleting user from subscribers.
+        /// </summary>
+        /// <param name="meetingId">Primary key of meeting to decline user subscription.</param>
+        /// <param name="userId">Primary key of user to decline subscription.</param>
+        /// <returns></returns>
         public async Task<OperationResult> DeclineMeetingParcipant(int meetingId, string userId)
         {
             if (string.IsNullOrWhiteSpace(userId))
@@ -155,6 +183,12 @@ namespace Community.Data
 
     }
 
+
+    /// <summary>
+    /// Indicates was operation finished successfully or not.
+    /// Returns OperationResult.Success if successfully or 
+    /// OperationResult.Failed if not.
+    /// </summary>
     public enum OperationResult
     {
         Success,

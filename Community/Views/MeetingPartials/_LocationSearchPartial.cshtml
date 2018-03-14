@@ -29,8 +29,7 @@
 
                 $("#City").autocomplete({
                     select: function (event, ui) {
-
-                        $('#CityId').val(ui.item.custom);
+                        $('#CityId').val(ui.item.cityId);
                     }
                 });
 

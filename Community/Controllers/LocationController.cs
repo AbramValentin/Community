@@ -18,9 +18,9 @@ namespace Community.Controllers
         public JsonResult Autocomplete(string term)
         {
             var model = _locationQuery
-                .GetCityStartsWith(term);
+                .GetCityStartsWith(term,10);
 
-            return Json(model);
+            return model;
         }
     }
 }
