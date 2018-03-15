@@ -15,12 +15,12 @@
             <a asp-controller="Account" asp-action="LogIn" class="btn btn-primary">Log in to subscribe</a>
         }
         // If user is not subscribed
-        else if (userId != null && !await _meetingQuery.IsUserSubscribedMeeting(Model, userId))
+        else if (userId != null && !await _meetingQuery.IsUserSubscribedMeetingAsync(Model, userId))
         {
             <a class="subscribeBtn btn btn-success" data-meetingId="@Model">Subscribe</a>
         }
         // If user is subscribed
-        else if (userId != null && await _meetingQuery.IsUserSubscribedMeeting(Model, userId))
+        else if (userId != null && await _meetingQuery.IsUserSubscribedMeetingAsync(Model, userId))
         {
             <a class="unsubscribeBtn btn btn-danger" data-meetingId="@Model">Unsubscribe</a>
         }

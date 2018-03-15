@@ -2,7 +2,7 @@
 
 namespace Community
 {
-    public class LogInVewModel
+    public class LoginViewModel
     {
         [Required]
         [EmailAddress]

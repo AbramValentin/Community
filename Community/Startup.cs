@@ -49,13 +49,17 @@ namespace Community
                     options.Password.RequiredLength = 0;
                     options.Password.RequireUppercase = false;
                     options.Password.RequireNonAlphanumeric = false;
-
-                    //options.User.AllowedUserNameCharacters += " ";
                 }
             )
             .AddEntityFrameworkStores<CommunityDbContext>()
             .AddDefaultTokenProviders();
-   
+
+            services.AddAuthentication().AddGoogle(googleOptions =>
+            {
+                googleOptions.ClientId = _configuration["Authentication:Google:ClientId"];
+                googleOptions.ClientSecret = _configuration["Authentication:Google:ClientSecret"];
+            });
+
             services.AddMvc();
         }
 

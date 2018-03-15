@@ -46,7 +46,7 @@ namespace Community
                         Id = item.Id,
 
                         Name = item.Name,
-                        
+
                         Description = string.Concat(item.Description.Take(15)),
 
                         CityName = (await _locationQuery.GetCityByIdAsync(item.CitiesId)).Name,
@@ -220,7 +220,7 @@ namespace Community
                         new MeetingSubscriberViewModel
                         {
                             UserId = item.Id,
-                            UserFirstName = item.UserFirstName,
+                            UserFirstName = item.UserFirstName ?? item.Email,
                             UserLastName = item.UserLastName,
                             UserPhotoPath = item.PhotoPath ?? " ",
 
